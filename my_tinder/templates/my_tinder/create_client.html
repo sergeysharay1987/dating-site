@@ -1,0 +1,27 @@
+{% extends 'my_tinder/base_my_tinder.html' %}
+
+{% block title %}
+Регистрация
+{% endblock %}
+{% block content %}
+<h1>Регистрация нового участника</h1>
+
+
+<form action=" {% url 'create_client' %}" method="post" enctype="multipart/form-data" >
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class = 'alert alert-danger'>
+            <p>{{ form.non_field_errors }}</p>
+        </div>
+    {% endif %}
+
+    {% for field in form %}
+     <div>
+        <p>{{ field.label }} {{ field }}</p>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+
+
+</form>
+{% endblock %}
