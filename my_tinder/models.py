@@ -1,9 +1,8 @@
-from django.db.models import Model, CharField, ImageField, EmailField
+from django.db.models import CharField, ImageField
+from django.contrib.auth.models import User
 
-# Create your models here.
 
-
-class Client(Model):
+class Client(User):
     MALE = 'М'
     FEMALE = 'Ж'
     GENDERS = ((MALE, 'Мужчина'),
@@ -11,6 +10,7 @@ class Client(Model):
 
     avatar = ImageField(verbose_name='Фото', upload_to='photos/%Y/%m/%d')
     gender = CharField(verbose_name='Пол', max_length=7, choices=GENDERS)
-    first_name = CharField(verbose_name='Имя', max_length=50)
-    second_name = CharField(verbose_name='Фамилия', max_length=50)
-    email = EmailField(verbose_name='Электронная почта', unique=True)
+
+    class Meta:
+        verbose_name = 'Участники'
+        verbose_name_plural = 'Участники'
