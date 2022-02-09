@@ -2,3 +2,5 @@
 .idea/
 *.xml
 *.pyc
+.idea/misc.xml
+db.sqlite3
