@@ -1,6 +1,6 @@
 .python-version
-.idea/
+dating_site/.idea/
 *.xml
 *.pyc
-.idea/misc.xml
 db.sqlite3
+media/
