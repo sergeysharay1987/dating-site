@@ -1,5 +1,5 @@
 .python-version
-dating_site/.idea/
+.dating_site/.idea/
 *.xml
 *.pyc
 db.sqlite3
