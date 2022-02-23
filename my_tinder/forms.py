@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import CharField
 from django import forms
-from .models import Client
+from .models import CustomUser
 
 
 class CreateClientForm(UserCreationForm):
@@ -9,16 +9,15 @@ class CreateClientForm(UserCreationForm):
     password2 = CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
-        model = Client
+        model = CustomUser
         fields = ['avatar',
                   'gender',
-                  'username',
                   'last_name',
                   'email',
                   'password1',
                   'password2']
 
-        widgets = {'username': forms.TextInput(attrs={'class': 'form-control'}),
+        widgets = {#'username': forms.TextInput(attrs={'class': 'form-control'}),
                    'first_name': forms.TextInput(attrs={'class': 'form-control'}),
                    'last_name': forms.TextInput(attrs={'class': 'form-control'}),
                    'email': forms.TextInput(attrs={'class': 'form-control'})
