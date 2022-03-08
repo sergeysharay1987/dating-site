@@ -31,7 +31,7 @@ from PIL.JpegImagePlugin import JpegImageFile
 
 def put_watermark(image: Image, watermark_path: str):
     # base_image = Image.open(image_path)
-    print(f'image_in_put_watermark_function{image}')
+    #print(f'image_in_put_watermark_function{image}')
     watermark_image = Image.open(watermark_path).convert('RGBA')
     datas = watermark_image.getdata()
     new_data: list = []
@@ -50,4 +50,4 @@ def put_watermark(image: Image, watermark_path: str):
     #image.show()
     #print(f'watermarked_image___________________: {image}')
     #image.show()
-    return image.save(BytesIO(), image.format)
+    return image
