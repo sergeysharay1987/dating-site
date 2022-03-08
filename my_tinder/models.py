@@ -1,7 +1,12 @@
+from PIL import Image
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import CharField, ImageField, EmailField
 from django.contrib.auth.models import AbstractUser
+from django.db.models.fields.files import ImageFieldFile
 from django.utils.translation import gettext_lazy as _
+
+from dating_site.settings import MEDIA_ROOT
+from .put_watermark import put_watermark
 
 
 class CustomUserManager(BaseUserManager):
@@ -57,3 +62,12 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = 'Участник'
         verbose_name_plural = 'Участники'
+
+    # def save(self, *args, **kwargs):
+    #     if self.avatar:
+    #         base_image = self.avatar
+    #         print(f'self.avatar: {dir(self.avatar)}')
+    #         #watermarked_image = put_watermark(base_image, f'{MEDIA_ROOT}/watermark.jpg')
+    #         #self.avatar = watermarked_image
+    #
+    #     super().save(self, *args, **kwargs)
