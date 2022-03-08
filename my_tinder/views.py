@@ -37,9 +37,9 @@ def create_client(request):
             password1 = bound_form.cleaned_data['password1']
             password2 = bound_form.cleaned_data['password2']
             data = {'gender': gender, 'last_name': last_name, 'email': email, 'password1':password1, 'password2': password2}
-            #data = bound_form.cleaned_data
-            #print(f'{image.filename}')
-            file_data = {'avatar': SimpleUploadedFile(watermarked_image)}
+
+            file_data = {'avatar': SimpleUploadedFile(watermarked_image, watermarked_image.read())}
+            print(f'watermarked_image{watermarked_image}')
             bound_form = CreateClientForm(data, file_data)
             bound_form.save()
             return render(request, 'my_tinder/create_client.html', {'form': bound_form})
