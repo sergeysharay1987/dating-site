@@ -33,10 +33,10 @@ def create_client(request):
             print(f'image_location: {image.format}')
             print(f'image: {image}')
 
-            watermarked_image: ImageFile = put_watermark(image, f'{MEDIA_ROOT}/watermark.jpg')
-
-            watermarked_image.show()
-            print(f'type_of_watermark_image: {watermarked_image.filename}')
+            watermarked_image = put_watermark(image, f'{MEDIA_ROOT}/watermark.jpg')
+            watermarked_image.seek(0)
+            #watermarked_image.show()
+            #print(f'type_of_watermark_image: {watermarked_image.filename}')
             last_name = bound_form.cleaned_data['last_name']
             gender = bound_form.cleaned_data['gender']
             email = bound_form.cleaned_data['email']
@@ -45,19 +45,19 @@ def create_client(request):
             #bound_form.cleaned_data["avatar"].image = watermarked_image
             #bound_form.cleaned_data["avatar"].image.show()
             data = {'gender': gender, 'last_name': last_name, 'email': email, 'password1':password1, 'password2': password2}
-            extension:str = watermarked_image.format.lower()
-            watermarked_image.save()
-            if extension == 'jpeg':
-                extension = 'jpg'
+            #extension:str = watermarked_image.format.lower()
+            #watermarked_image.save()
+            # if extension == 'jpeg':
+            #     extension = 'jpg'
 
             print(f'type(watermarked_image): {type(watermarked_image)}')
             #file_data = {'avatar': SimpleUploadedFile(f'image.{extension}', watermarked_image.tobytes(), content_type=f'image/{extension}')}
-            file_data = {'avatar': SimpleUploadedFile(f'image.png', watermarked_image.tobytes(),
+            file_data = {'avatar': SimpleUploadedFile(f'image.png', watermarked_image.read(),
                                                       content_type=f'image/png')}
             print(f'file_data["avatar"].size: {file_data["avatar"].size}')
             print(f'file_data: {file_data}')
             bound_form = CreateClientForm(data, file_data)
-            bound_form.is_valid()
+            #bound_form.is_valid()
             print(f'bound_form.errors: {bound_form.errors}')
             bound_form.save()
             return render(request, 'my_tinder/create_client.html', {'form': bound_form})
