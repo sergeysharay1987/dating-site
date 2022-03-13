@@ -42,13 +42,14 @@ def create_client(request):
             return render(request, 'my_tinder/create_client.html', {'form': bound_form})
 
 
-def show_client(request, pk):
-    client = CustomUser.objects.get(id=pk)
+def show_client(request, id):
+    client = CustomUser.objects.get(id=id)
 
     client_info = {'avatar': client.avatar,
                    'gender': client.__dict__['gender'],
                    'first_name': client.__dict__['first_name'],
                    'last_name': client.__dict__['last_name']}
     context = {'client': client_info}
+    #context = context.items()
 
     return render(request, 'my_tinder/client_page.html', context)
