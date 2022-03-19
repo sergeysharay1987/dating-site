@@ -31,9 +31,30 @@ from PIL.JpegImagePlugin import JpegImageFile
     base_image.save(f'{image_path}')'''
 
 
+def make_size(base_img: Image, watermark_img: Image):
+    """Подгоняет изображениес водяным знаком под базовое изображение"""
+    # base_img: Image = Image.open(base_img_path)  # базовое изображение - для вставки водяного знака
+    # watermark_img: image = Image.open(
+    # watermark_img_path)  # изображение, содержащее водяной знак, оно должно иметь белый
+    # фон, для того чтобы в последующем сделать белый цвет полностью прозрачным
+    watermark: Image = Image.new('RGB', base_img.size, (255, 255, 255))  # создаём новое изображение, полностью белое,
+    # для того чтобы вставить в него изображение с водяным знаком,
+    # здесь также используется белый цвет, чтобы в дальнейшем сделать его полностью прозрачным
+    watermark_width, watermark_height = watermark_img.size  # получаем размеры изображение, содержащее водяной знак
+    watermark_size = watermark_width // 4, watermark_height // 4  # создаём кортеж с размерами, уменьшая размеры
+    # изображения с водяным знаклм в 4 раза
+    watermark_img = watermark_img.resize(watermark_size)  # уменьшаем в 4 раза наш водяной знак, для того чтобы он не
+    # занимал много места на базовом изображении
+    # watermark.alpha_composite(watermark_img)
+    watermark.paste(watermark_img, (watermark.size[0] - watermark_img.size[0], 0))  # вставляем уменьшенный водяной
+    # знак в полностью белое изображение
+    print(watermark.mode)
+    return watermark
+
+
 def put_watermark(image: Image, watermark_path: str):
     # base_image = Image.open(image_path)
-    #print(f'image_in_put_watermark_function{image}')
+    # print(f'image_in_put_watermark_function{image}')
     image = image.convert('RGB')
     watermark_image = Image.open(watermark_path).convert('RGB')
     watermark = Image.new('RGBA', watermark_image.size, (255, 255, 255, 255))
@@ -41,12 +62,13 @@ def put_watermark(image: Image, watermark_path: str):
     # print(pos_watermark)
     watermark.paste(watermark_image)
     datas = watermark_image.getdata()
-    #watermark.show()
+    # watermark.show()
     new_data: list = []
 
     for item in datas:
 
-        if item[0] != 255 and item[1] != 255 and item[1] != 255:
+        if item[0] == 255 and item[1] == 255 and item[2] == 255:
+        #if 250 <= item[0] <= 255 and 250 <= item[1] <= 255 and 250 <= item[2] <= 255:
 
             new_data.append((item[0], item[1], item[2], 0))
         else:
@@ -61,8 +83,8 @@ def put_watermark(image: Image, watermark_path: str):
     byte_io = BytesIO()
     byte_io.seek(0)
     image = image.save(byte_io, 'PNG')
-    #print(f'image_after_pasting_watermark: {image}')
-    #image.show()
+    # print(f'image_after_pasting_watermark: {image}')
+    # image.show()
     print(f'watermarked_image___________________: {byte_io}')
-    #image.show()
+    # image.show()
     return byte_io
