@@ -20,7 +20,7 @@ def create_client(request):
 
             image_field: InMemoryUploadedFile = bound_form.cleaned_data['avatar']
             image = Image.open(image_field, mode='r')
-            watermarked_image = put_watermark(image, f'{MEDIA_ROOT}/watermark.png')
+            watermarked_image = put_watermark(image, f'{MEDIA_ROOT}/watermark_background.png')
             watermarked_image.seek(0)
             file_data = {'avatar': SimpleUploadedFile(f'image.png', watermarked_image.read(),
                                                       content_type=f'image/png')}

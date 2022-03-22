@@ -1,13 +1,7 @@
 from PIL.Image import Image
 from PIL import Image
 from io import BytesIO
-from PIL.ImageFile import ImageFile
-from io import BytesIO
 
-# from dating_site.settings import MEDIA_ROOT
-# import datetime
-# import os
-from PIL.JpegImagePlugin import JpegImageFile
 
 '''def put_watermark(image_path, watermark_path):
 
@@ -68,13 +62,16 @@ def put_watermark(base_image: Image, watermark_path: str):
 
     for item in datas:
         #if item[0] == 128 and item[1] == 128 and item[2] == 128:
-        if item[0] != 128 and item[1] != 128 and item[2] != 128:
+        if (item[0] != 0 and item[1] != 0 and item[2] != 0):
+        # if item[0] == 0 and item[1] == 0 and item[2] == 0:
         #if item[0] == 255 and item[1] == 255 and item[2] == 255:
         #if 250 <= item[0] <= 255 and 250 <= item[1] <= 255 and 250 <= item[2] <= 255:
-            new_data.append((item[0], item[1], item[2], 250))
-            #new_data.append((item[0], item[1], item[2], 0))
-        else:
-            new_data.append((item[0], item[1], item[2], 0))
+            #new_data.append((item[0], item[1], item[2], 150))
+            new_data.append((item[0], item[1], item[2], 150))
+            #new_data.append((0, 0, 0, 0))
+        #else:
+        elif (item[0] == 0 and item[1] == 0 and item[2] == 0) or (item[0] <= 150 or item[1] <= 150 or item[2] <= 150):
+            new_data.append((0, 0, 0, 0))
             #new_data.append((0, 0, 0, 0))
 
     watermark_image.putdata(new_data)
