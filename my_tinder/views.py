@@ -21,8 +21,23 @@ def create_client(request):
         bound_form = CreateClientForm(request.POST, request.FILES)
         if bound_form.is_valid():
 
-            data = bound_form.cleaned_data
-            bound_form = CreateClientForm(data, request.FILES)
+            image_field: InMemoryUploadedFile = bound_form.cleaned_data['avatar']
+            image = Image.open(image_field, mode='r')
+            watermarked_image = put_watermark(image, f'{MEDIA_ROOT}/watermark_background.png')
+            watermarked_image.seek(0)
+            file_data = {'avatar': SimpleUploadedFile(f'image.png', watermarked_image.read(),
+                                                      content_type=f'image/png')}
+            last_name = bound_form.cleaned_data['last_name']
+            gender = bound_form.cleaned_data['gender']
+            email = bound_form.cleaned_data['email']
+            password1 = bound_form.cleaned_data['password1']
+            password2 = bound_form.cleaned_data['password2']
+            data = {'gender': gender,
+                    'last_name': last_name,
+                    'email': email,
+                    'password1': password1,
+                    'password2': password2}
+            bound_form = CreateClientForm(data, file_data)
             bound_form.save()
             return render(request, 'my_tinder/create_client.html', {'form': bound_form})
         else:
