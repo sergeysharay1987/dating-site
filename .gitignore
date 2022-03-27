@@ -3,3 +3,5 @@ dating_site/.idea/
 *.xml
 *.pyc
 db.sqlite3
+media/
+.idea/
