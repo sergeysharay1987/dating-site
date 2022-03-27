@@ -15,8 +15,9 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import create_client
+from .views import create_client, show_client
 
 urlpatterns = [
-    path('clients/create/', create_client, name='create_client')
+    path('clients/create/', create_client, name='create_client'),
+    path('clients/<int:id>/', show_client, name='show_client')
 ]
