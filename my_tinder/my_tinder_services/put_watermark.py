@@ -1,9 +1,9 @@
 from PIL.Image import Image
 from PIL import Image
 from io import BytesIO
+import numpy as np
 
-
-def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
+'''def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
     """Накладывает водяной знак на изображение. В качестве водяного знака
     используется изображение с чёрным фоном, с расширением .png. Принимает два аргумента: изображение на которое
     нужно поместить водяной знак и изображение, содержащее водяной знак. Возвращает объект типа BytesIO. """
@@ -46,6 +46,35 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
 
     watermark_image.putdata(new_data)
     watermark_image.thumbnail((base_image.size[0]//2, base_image.size[1]//2))  # уменьшаем размеры водяного знака в
+    # два раза меньше чем размеры базового изображения
+    base_image.paste(watermark_image,
+                     (base_image.size[0] - watermark_image.size[0], base_image.size[1] - watermark_image.size[1]),
+                     mask=watermark_image)
+    byte_io = BytesIO()
+    byte_io.seek(0)
+    base_image.save(byte_io, 'PNG')
+    return byte_io'''
+
+
+def get_middle_value(tup):
+    return (tup[0] + tup[1] + tup[2]) // 3
+
+
+def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
+    """Накладывает водяной знак на изображение. В качестве водяного знака
+    используется изображение с чёрным фоном, с расширением .png. Принимает два аргумента: изображение на которое
+    нужно поместить водяной знак и изображение, содержащее водяной знак. Возвращает объект типа BytesIO. """
+    base_image = base_image.convert('RGB')
+    watermark_image: Image = Image.open(watermark_path).convert('RGBA')
+    middle_pixels: list = []
+    # datas = np.array(watermark_image)
+    datas = watermark_image.getdata()
+    datas = np.array(datas)
+    middle_pixels = np.apply_along_axis(get_middle_value, 2, datas)
+    print(middle_pixels)
+    middle_values, counts = np.unique(middle_pixels, return_counts=True)
+    #watermark_image.putdata(new_data)
+    watermark_image.thumbnail((base_image.size[0] // 2, base_image.size[1] // 2))  # уменьшаем размеры водяного знака в
     # два раза меньше чем размеры базового изображения
     base_image.paste(watermark_image,
                      (base_image.size[0] - watermark_image.size[0], base_image.size[1] - watermark_image.size[1]),
