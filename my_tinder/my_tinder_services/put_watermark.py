@@ -66,14 +66,11 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
     нужно поместить водяной знак и изображение, содержащее водяной знак. Возвращает объект типа BytesIO. """
     base_image = base_image.convert('RGB')
     watermark_image: Image = Image.open(watermark_path).convert('RGBA')
-    middle_pixels: list = []
-    # datas = np.array(watermark_image)
     datas = watermark_image.getdata()
     datas = np.array(datas)
-    middle_pixels = np.apply_along_axis(get_middle_value, 2, datas)
+    middle_pixels = datas.mean(axis=2)
     print(middle_pixels)
     middle_values, counts = np.unique(middle_pixels, return_counts=True)
-    #watermark_image.putdata(new_data)
     watermark_image.thumbnail((base_image.size[0] // 2, base_image.size[1] // 2))  # уменьшаем размеры водяного знака в
     # два раза меньше чем размеры базового изображения
     base_image.paste(watermark_image,
