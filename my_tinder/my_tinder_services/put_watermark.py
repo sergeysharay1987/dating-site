@@ -69,6 +69,13 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
     datas = watermark_image.getdata()
     datas = np.array(datas)
     middle_pixels = datas.mean(axis=2)
+    middle_values, counts = np.unique(middle_pixels, return_counts=True) # отбрасываем дублирующие элементы из
+    # массива, содержащего средние значения цветов, а также получаем массив количества вхождений средних значений
+    middle_values = middle_values[1:] # отбрасываем первый элемент - 0
+    counts = counts[1:] # отбрасываем первый элемент 0
+    max_counts = np.max(counts)  # находим наибольшее количество вхождений
+    i = np.where(counts == max_counts)  # находим индекс наиболее используемого цвета через массив вхождений,
+    # так индексы массива для количества вхождений и массива средних значений цветов совпадают
     print(middle_pixels)
     middle_values, counts = np.unique(middle_pixels, return_counts=True)
     watermark_image.thumbnail((base_image.size[0] // 2, base_image.size[1] // 2))  # уменьшаем размеры водяного знака в
