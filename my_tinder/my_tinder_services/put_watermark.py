@@ -72,12 +72,22 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
     middle_values, counts = np.unique(middle_pixels, return_counts=True) # отбрасываем дублирующие элементы из
     # массива, содержащего средние значения цветов, а также получаем массив количества вхождений средних значений
     middle_values = middle_values[1:] # отбрасываем первый элемент - 0
-    counts = counts[1:] # отбрасываем первый элемент 0
+    counts = counts[1:] # отбрасываем первый элемент - 0
     max_counts = np.max(counts)  # находим наибольшее количество вхождений
     i = np.where(counts == max_counts)  # находим индекс наиболее используемого цвета через массив вхождений,
     # так индексы массива для количества вхождений и массива средних значений цветов совпадают
+    main_color = middle_values[i][0]
     print(middle_pixels)
-    middle_values, counts = np.unique(middle_pixels, return_counts=True)
+    reshaped_datas = datas.reshape(-1, 3)
+
+    print(f'reshaped_datas: {reshaped_datas.shape}')
+    alpha_channel = np.where(reshaped_datas >= main_color, 70, 0) # получаем массив, содрежащий значения для альфа канала
+    new_datas = np.concatenate((reshaped_datas, alpha_channel), axis=1) # добавляем к каналам изображения (red, green, blue) альфа канал
+    reshaped_new_datas = new_datas.reshape((datas.shape[0], datas.shape[1], 4)) # изменяем форму массива, чтобы
+    # испозовать его в дальнейшем для получения объекта изображения PIL.Image.Image
+
+    print(f'reshaped_new_datas.shape: {reshaped_new_datas.shape}')
+    im = Image.fromarray(reshaped_new_datas, mode='RGBA')
     watermark_image.thumbnail((base_image.size[0] // 2, base_image.size[1] // 2))  # уменьшаем размеры водяного знака в
     # два раза меньше чем размеры базового изображения
     base_image.paste(watermark_image,
