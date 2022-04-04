@@ -66,8 +66,9 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
     нужно поместить водяной знак и изображение, содержащее водяной знак. Возвращает объект типа BytesIO. """
     base_image = base_image.convert('RGB')
     watermark_image: Image = Image.open(watermark_path).convert('RGBA')
-    datas = watermark_image.getdata()
-    datas = np.array(datas)
+    #datas = watermark_image.getdata()
+    #datas = np.array(datas)
+    datas = np.array(watermark_image)
     middle_pixels = datas.mean(axis=2)
     middle_values, counts = np.unique(middle_pixels, return_counts=True) # отбрасываем дублирующие элементы из
     # массива, содержащего средние значения цветов, а также получаем массив количества вхождений средних значений
@@ -82,9 +83,10 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
 
     print(f'reshaped_datas: {reshaped_datas.shape}')
     alpha_channel = np.where(reshaped_datas >= main_color, 70, 0) # получаем массив, содрежащий значения для альфа канала
+    alpha_channel.dtype = 'uint8'
     new_datas = np.concatenate((reshaped_datas, alpha_channel), axis=1) # добавляем к каналам изображения (red, green, blue) альфа канал
-    reshaped_new_datas = new_datas.reshape((datas.shape[0], datas.shape[1], 4)) # изменяем форму массива, чтобы
-    # испозовать его в дальнейшем для получения объекта изображения PIL.Image.Image
+    reshaped_new_datas = new_datas.reshape((datas.shape[0], -1, 4)) # изменяем форму массива, чтобы
+    # использовать его в дальнейшем для получения объекта изображения PIL.Image.Image
 
     print(f'reshaped_new_datas.shape: {reshaped_new_datas.shape}')
     im = Image.fromarray(reshaped_new_datas, mode='RGBA')
