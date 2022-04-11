@@ -56,8 +56,29 @@ import numpy as np
     return byte_io'''
 
 
-def get_middle_value(tup):
-    return (tup[0] + tup[1] + tup[2]) // 3
+def test_array(image_path):
+    image = Image.open(image_path)
+    image_by_np_array = np.array(image, dtype='uint8')
+    print(f'image_by_np_array: {image_by_np_array[350, 350]}')
+    print(f'image_by_np_array.itemsize: {image_by_np_array.itemsize}')
+    # new_image = Image.fromarray(image_by_np_array)
+    #print(image_by_np_array.transpose().shape)
+    new_data = np.where(image_by_np_array[:,:, [0,1,2]] == [0, 0, 0], [255, 255, 255], image_by_np_array[:,:,[0,1,2]])
+    #new_data.dtype = 'uint8'
+    print(f'new_data.dtype: {new_data.dtype}')
+    print(f'new_data: {new_data[350, 490]}')
+    # for value in new_data[:]:
+    #     for val in value[:]:
+    #         print(val)
+#    new_data.dtype = 'uint8'
+    #print(f'new_data.shape: {new_data.  shape}')
+    # for value in new_data[350, :]:
+    #     print(value)
+    new_data = np.ascontiguousarray(new_data, dtype='uint8')
+    new_image = Image.fromarray(new_data, 'RGB')
+   # new_image = Image.fromarray(image_by_np_array, 'RGB')
+
+    new_image.show()
 
 def get_datas(image_path):
     def get_datas(image_path):
