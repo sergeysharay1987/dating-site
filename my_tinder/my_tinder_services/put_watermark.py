@@ -56,6 +56,22 @@ import numpy as np
     return byte_io'''
 
 
+
+def find_main_colors(image_path):
+    image = Image.open(image_path)
+    image_by_np_array = np.array(image)
+    middle_pixels = image_by_np_array.mean(axis=2, dtype='uint16')
+    unique_middle_pixels, counts = np.unique(middle_pixels, return_counts=True)
+    unique_middle_pixels = unique_middle_pixels[1:]
+    unique_middle_pixels.shape = -1, 1
+    counts = counts[1:]
+    counts.shape = -1, 1
+    print(f'unique_middle_pixels: {unique_middle_pixels.shape}')
+    # print(f'counts: {counts}')
+    unique_counts = np.concatenate((unique_middle_pixels, counts), axis=1)
+    print(f'unique_counts:{unique_counts.shape}')
+    print(unique_counts)
+
 def test_array(image_path):
     image = Image.open(image_path)
     image_by_np_array = np.array(image, dtype='uint8')
