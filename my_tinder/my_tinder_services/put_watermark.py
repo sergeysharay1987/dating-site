@@ -60,17 +60,31 @@ import numpy as np
 def find_main_color(image_path):
     image = Image.open(image_path)
     image_by_np_array = np.array(image)
-    middle_pixels = image_by_np_array.mean(axis=2, dtype='uint16')
-    unique_middle_pixels, counts = np.unique(middle_pixels, return_counts=True)
-    unique_middle_pixels = unique_middle_pixels[1:]
-    unique_middle_pixels.shape = -1, 1
-    counts = counts[1:]
-    counts.shape = -1, 1
+    middle_pixels = image_by_np_array.mean(axis=2, dtype='uint16')  # получаем массив, содержащий средние значения
+    # каналов
+    unique_middle_pixels, counts = np.unique(middle_pixels, return_counts=True)  # получаем массив с уникальными
+    # средними значениями каналов то есть (red, green, blue)//3 а также массив, содержащий количетво вхождений
+    # средних значений каналов red, green, blue, то есть сколько раз то или иное среднее значение встречается в
+    # массиве, содержащего средние значения каналов
+    unique_middle_pixels = unique_middle_pixels[1:]  # не учитываем нулевой элемент массива, так как нулевой индекс
+    # содержит значение 0, то есть не учитываем чёрный цвет (цвет фона)
+    unique_middle_pixels.shape = -1, 1  # изменяем представление массива для дальнейшего использования
+    counts = counts[1:]  # не учитываем нулевой элемент массива, так как нулевой индекс
+    # содержит количество вхождений значения 0
+    counts.shape = -1, 1  # изменяем представление массива для дальнейшего использования
     print(f'unique_middle_pixels: {unique_middle_pixels.shape}')
     # print(f'counts: {counts}')
-    unique_counts = np.concatenate((unique_middle_pixels, counts), axis=1)
-    print(f'unique_counts:{unique_counts.shape}')
-    print(unique_counts)
+    # unique_counts = np.concatenate((unique_middle_pixels, counts), axis=1)
+    # print(f'unique_counts:{unique_counts.shape}')
+    # unique_counts = unique_counts[1:] # make array without black color
+    print(f'unique_middle_pixels.size: {unique_middle_pixels.size}')
+    # print(unique_counts)
+    # print(unique_counts[unique_counts[:, 2]])
+    max_counts_color = np.max(counts)
+    ind_main_color = np.where(max_counts_color == counts)[0][0]  # получаем индекс среднего значения наиболее
+    # используемого цвета
+    main_color = unique_middle_pixels[ind_main_color][0]  # получаем среднее значения наиболее используемого цвета
+    return main_color
 
 def test_array(image_path):
     image = Image.open(image_path)
