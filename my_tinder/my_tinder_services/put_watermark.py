@@ -57,7 +57,7 @@ import numpy as np
 
 
 
-def find_main_colors(image_path):
+def find_main_color(image_path):
     image = Image.open(image_path)
     image_by_np_array = np.array(image)
     middle_pixels = image_by_np_array.mean(axis=2, dtype='uint16')
