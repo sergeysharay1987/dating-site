@@ -1,3 +1,5 @@
+import os
+
 from PIL.Image import Image
 from PIL import Image
 from io import BytesIO
@@ -56,7 +58,6 @@ import numpy as np
     return byte_io'''
 
 
-
 def find_main_color(image_path):
     image = Image.open(image_path)
     image_by_np_array = np.array(image)
@@ -86,65 +87,47 @@ def find_main_color(image_path):
     main_color = unique_middle_pixels[ind_main_color][0]  # получаем среднее значения наиболее используемого цвета
     return main_color
 
-def test_array(image_path):
-    image = Image.open(image_path)
-    image_by_np_array = np.array(image, dtype='uint8')
-    print(f'image_by_np_array: {image_by_np_array[350, 350]}')
-    print(f'image_by_np_array.itemsize: {image_by_np_array.itemsize}')
-    # new_image = Image.fromarray(image_by_np_array)
-    #print(image_by_np_array.transpose().shape)
-    new_data = np.where(image_by_np_array[:,:, [0,1,2]] == [0, 0, 0], [255, 255, 255], image_by_np_array[:,:,[0,1,2]])
-    #new_data.dtype = 'uint8'
-    print(f'new_data.dtype: {new_data.dtype}')
-    print(f'new_data: {new_data[350, 490]}')
-    # for value in new_data[:]:
-    #     for val in value[:]:
-    #         print(val)
-#    new_data.dtype = 'uint8'
-    #print(f'new_data.shape: {new_data.  shape}')
-    # for value in new_data[350, :]:
-    #     print(value)
-    new_data = np.ascontiguousarray(new_data, dtype='uint8')
-    new_image = Image.fromarray(new_data, 'RGB')
-   # new_image = Image.fromarray(image_by_np_array, 'RGB')
+def transparent_background(image_path):
+    image = Image.open(image_path).convert('RGBA')
+    image_by_np_array = np.array(image)
+    print(f'image_by_np_array: {image_by_np_array.dtype}')
+    new_data = image_by_np_array.copy()
+    # new_data = new_data.reshape(-1, 4)
+    # print(new_data[new_data == [0,0,0,255]])
+    # new_data = np.where(new_data != [0, 0, 0, 255], new_data[:,:,[0,1,2,3]], [0, 0, 0, 0])
+    black = new_data[new_data == [0, 0, 0, 255]]
+    transparent_color = new_data[new_data != [0, 0, 0, 255]]
+    new_data[black] = [0, 0, 0, 0]
 
-    new_image.show()
 
 def get_datas(image_path):
-    def get_datas(image_path):
-        image = Image.open(image_path)
-        image_by_np_array = np.array(image)
-        middle_pixels = image_by_np_array.mean(axis=2)
-        print(f'middle_pixels.shape: {middle_pixels.shape}')
-        middle_pixels.shape = (-1, 1)
-        print(f'middle_pixels.dtype: {middle_pixels.dtype}')
-        unique_middle_pixels, counts = np.unique(middle_pixels, return_counts=True)
+    image = Image.open(image_path)
+    image_by_np_array = np.array(image)
+    middle_pixels = image_by_np_array.mean(axis=2, dtype='uint16')
+    unique_middle_pixels, counts = np.unique(middle_pixels, return_counts=True)
+    unique_middle_pixels = unique_middle_pixels[1:]
 
-        unique_middle_pixels = unique_middle_pixels[1:]
-        counts = counts[1:]
-        max_counts_of_main_color = np.max(counts)
-        index_of_main_usable_color = np.where(counts == max_counts_of_main_color)[0][0]
-        main_color = unique_middle_pixels[index_of_main_usable_color]
-        print(f'index_of_main_usable_color: {index_of_main_usable_color}')
-        # image_by_np_array.shape = (-1, 3)
+    counts = counts[1:]
+    middle_pixels.shape = (-1, 1)
+    max_counts_of_main_color = np.max(counts)
+    index_of_main_usable_color = np.where(counts == max_counts_of_main_color)[0][0]
+    main_color = unique_middle_pixels[index_of_main_usable_color]
+    reshaped_image_by_np_array = image_by_np_array.reshape(-1, 3)
+    middle_pixels = middle_pixels.flatten()
 
-        print(f'image_by_np_array.shape: {image_by_np_array.shape}')
-        alpha_channel = np.where(middle_pixels >= main_color, 70, 0)
-        # alpha_channel.dtype = 'uint16'
-        alpha_channel.shape = -1, 1
-        print(f'alpha_channel.shape: {alpha_channel.shape}')
-        reshaped_image_by_np_array = image_by_np_array.reshape(-1, 3)
-        print(f'image_by_np_array.dtype: {image_by_np_array.dtype}')
-        print(f'reshaped_image_by_np_array.dtype: {reshaped_image_by_np_array.dtype}')
-        new_datas_with_alpha = np.concatenate((reshaped_image_by_np_array, alpha_channel), axis=1)
-        new_datas_with_alpha.shape = image_by_np_array.shape[0], image_by_np_array.shape[1], 4
-        print(f'new_datas_with_alpha.shape: {new_datas_with_alpha.shape}')
-        print(f'new_datas_with_alpha.dtype: {new_datas_with_alpha.dtype}')
-        print()
-        for value in new_datas_with_alpha:
-            print(value)
-        image_fromarray_new_datas = Image.fromarray(new_datas_with_alpha, 'RGB')
-        image_fromarray_new_datas.show()
+    more_usability_colors = main_color
+
+    middle_pixels[middle_pixels < more_usability_colors] = 0
+
+    middle_pixels[middle_pixels >= more_usability_colors] = 70
+
+    alpha_channel = middle_pixels
+
+    alpha_channel.shape = -1, 1
+    new_datas_with_alpha = np.concatenate((reshaped_image_by_np_array, alpha_channel), axis=1, dtype='uint8')
+    new_datas_with_alpha.shape = image_by_np_array.shape[0], image_by_np_array.shape[1], 4
+    new_image = Image.fromarray(new_datas_with_alpha, 'RGBA')
+    new_image.save(f'{os.getcwd()}/new_image_.png')
 
 
 def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
@@ -153,14 +136,14 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
     нужно поместить водяной знак и изображение, содержащее водяной знак. Возвращает объект типа BytesIO. """
     base_image = base_image.convert('RGB')
     watermark_image: Image = Image.open(watermark_path).convert('RGBA')
-    #datas = watermark_image.getdata()
-    #datas = np.array(datas)
+    # datas = watermark_image.getdata()
+    # datas = np.array(datas)
     datas = np.array(watermark_image)
     middle_pixels = datas.mean(axis=2)
-    middle_values, counts = np.unique(middle_pixels, return_counts=True) # отбрасываем дублирующие элементы из
+    middle_values, counts = np.unique(middle_pixels, return_counts=True)  # отбрасываем дублирующие элементы из
     # массива, содержащего средние значения цветов, а также получаем массив количества вхождений средних значений
-    middle_values = middle_values[1:] # отбрасываем первый элемент - 0
-    counts = counts[1:] # отбрасываем первый элемент - 0
+    middle_values = middle_values[1:]  # отбрасываем первый элемент - 0
+    counts = counts[1:]  # отбрасываем первый элемент - 0
     max_counts = np.max(counts)  # находим наибольшее количество вхождений
     i = np.where(counts == max_counts)  # находим индекс наиболее используемого цвета через массив вхождений,
     # так индексы массива для количества вхождений и массива средних значений цветов совпадают
@@ -169,10 +152,12 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
     reshaped_datas = datas.reshape(-1, 3)
 
     print(f'reshaped_datas: {reshaped_datas.shape}')
-    alpha_channel = np.where(reshaped_datas >= main_color, 70, 0) # получаем массив, содрежащий значения для альфа канала
+    alpha_channel = np.where(reshaped_datas >= main_color, 70,
+                             0)  # получаем массив, содрежащий значения для альфа канала
     alpha_channel.dtype = 'uint8'
-    new_datas = np.concatenate((reshaped_datas, alpha_channel), axis=1) # добавляем к каналам изображения (red, green, blue) альфа канал
-    reshaped_new_datas = new_datas.reshape((datas.shape[0], -1, 4)) # изменяем форму массива, чтобы
+    new_datas = np.concatenate((reshaped_datas, alpha_channel),
+                               axis=1)  # добавляем к каналам изображения (red, green, blue) альфа канал
+    reshaped_new_datas = new_datas.reshape((datas.shape[0], -1, 4))  # изменяем форму массива, чтобы
     # использовать его в дальнейшем для получения объекта изображения PIL.Image.Image
 
     print(f'reshaped_new_datas.shape: {reshaped_new_datas.shape}')
