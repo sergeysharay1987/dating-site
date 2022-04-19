@@ -111,7 +111,16 @@ def get_datas(image_path):
     middle_pixels.shape = (-1, 1)
     max_counts_of_main_color = np.max(counts)
     index_of_main_usable_color = np.where(counts == max_counts_of_main_color)[0][0]
+    less_usable_color = np.min(counts)
+    print(f'less_usable_color: {less_usable_color}')
+    index_of_less_usable_color = np.where(counts == less_usable_color)
+    less_color = unique_middle_pixels[index_of_less_usable_color]
+    index_of_less_usable_color = np.where(counts == less_usable_color)
     main_color = unique_middle_pixels[index_of_main_usable_color]
+    middle_pixels[middle_pixels == less_color] = 0
+    print(f'middle_pixels[middle_pixels != less_color]: {middle_pixels != less_color}')
+    middle_pixels[middle_pixels != less_color] = 70
+
     reshaped_image_by_np_array = image_by_np_array.reshape(-1, 3)
     middle_pixels = middle_pixels.flatten()
 
