@@ -58,19 +58,15 @@ import numpy as np
     return byte_io'''
 
 
-def put_watermark(base_image: Image, watermark_path: str):
+def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
+    if base_image.mode != 'RGBA':
 
+        base_image = base_image.convert('RGBA')
     watermark_img: Image = Image.open(watermark_path)
-
-    print(watermark_img.mode)
-
     width, heigth = base_image.size
-    print(width, heigth)
     watermark_img.thumbnail((width, heigth), Image.ANTIALIAS)
-    transparent_layer = Image.new('RGBA', base_image.size, (255, 255, 255, 0))
-    transparent_layer.paste(watermark_img, (width // 3, heigth // 3))
-    transparent_layer.show()
-    base_image.paste(transparent_layer, mask=transparent_layer)
+    destanation = (width//3, heigth//3)
+    base_image.alpha_composite(watermark_img, destanation)
     byte_io = BytesIO()
     byte_io.seek(0)
     base_image.save(byte_io, 'PNG')
