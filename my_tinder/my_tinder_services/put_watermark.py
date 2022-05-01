@@ -64,8 +64,8 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
         base_image = base_image.convert('RGBA')
     watermark_img: Image = Image.open(watermark_path)
     width, heigth = base_image.size
-    watermark_img.thumbnail((width, heigth), Image.ANTIALIAS)
-    destanation = (width//3, heigth//3)
+    watermark_img.thumbnail((width//3, heigth//3))
+    destanation = (width - watermark_img.size[0], 0)
     base_image.alpha_composite(watermark_img, destanation)
     byte_io = BytesIO()
     byte_io.seek(0)
