@@ -1,0 +1,39 @@
+{% extends 'my_tinder/base_my_tinder.html' %}
+
+
+{% block title %}
+Страница участника
+{% endblock %}
+{% block content %}
+<h1>Clients</h1>
+
+
+
+
+{% for field_name, value in client.items %}
+    {% if value.url %}
+    <p>{{ field_name }}</p>
+    <img src="{{ value.url }}" alt="connect" style="max-height:300px">
+    {% else %}
+        <p>{{ field_name }}: {{ value }}</p>
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+
+
+
+
+<!--
+<div>
+ <img src="{{ client.avatar.url}}" alt="connect" style="max-height:500px">
+  <p>{{ client.gender }}</p>
+  <p>{{ client.first_name }}</p>
+  <p>{{ client.last_name }}</p>
+</div>-->
+{% endblock %}
+
+

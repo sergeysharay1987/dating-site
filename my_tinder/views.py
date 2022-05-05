@@ -1,6 +1,8 @@
 from PIL import Image
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
 from my_tinder.models import CustomUser
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from dating_site.settings import MEDIA_ROOT
 from .forms import CreateClientForm
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
@@ -45,3 +47,18 @@ def show_client(request, id):
                    'last_name': client.last_name}
     context = {'client': client_info}
     return render(request, 'my_tinder/client_page.html', context)
+
+
+def login_client(request):
+    if request.method == 'GET':
+        return render(request, 'my_tinder/login_client.html', {'form': AuthenticationForm})
+    if request.method == 'POST':
+        username = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page.
+            return redirect('show_client')
+        else:
+            return render(request, 'my_tinder/login_client.html', {'form': AuthenticationForm})
