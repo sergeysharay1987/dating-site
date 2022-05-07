@@ -19,6 +19,6 @@ from .views import create_client, show_client, login_client
 
 urlpatterns = [
     path('clients/create/', create_client, name='create_client'),
-    path('clients/login/', login_client, name='login_client'),
+    path('login/', login_client, name='login_client'),
     path('clients/<int:id>/', show_client, name='show_client')
 ]
