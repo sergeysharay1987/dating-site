@@ -1,0 +1,15 @@
+{% extends 'my_tinder/base_my_tinder.html' %}
+
+{% block content%}
+<h1>Другие участники</h1>
+ <div class="header">
+    <ul>
+    {% for client in clients %}
+        <p>{{ client.avatar }}</p>
+        <p>{{ client.first_name }}</p>
+
+    {% endfor %}
+
+{% endblock%}
+    </ul>
+    </div>
