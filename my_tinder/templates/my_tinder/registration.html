@@ -9,25 +9,10 @@
 <h1>Регистрация нового участника</h1>
 
 
-<form action=" {% url 'create_client' %}" method="post" enctype="multipart/form-data" >
+<form action=" {% url 'registration' %}" method="post" enctype="multipart/form-data" >
     {% csrf_token %}
 
-    <!--{% if form.errors %}
-        {% for error in form.errors.items %}
-        <div class = 'alert alert-danger'>
-            <p>{{ error }}</p>
-        </div>
-        {% endfor %}
-    {% endif %}-->
-        <!--<div class = 'alert alert-danger'>
-            <p>{{ form.errors }}</p>
-        </div>-->
-
-
     {% for field in form %}
-
-
-
              <div class = 'form-group'>
                  {% if field.errors %}
                     <div class = 'alert alert-danger'>
@@ -40,7 +25,5 @@
 
     {% endfor %}
     <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-
-
 </form>
 {% endblock %}
