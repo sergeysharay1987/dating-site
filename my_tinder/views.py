@@ -1,4 +1,4 @@
-import os
+from django.db.models import QuerySet
 from .apps import MyTinderConfig
 from PIL import Image
 from django.contrib.auth import login, authenticate
@@ -14,10 +14,17 @@ app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
 path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изображения, содержащее водяной знак
 
-# Create your views here.
+
+menu = [{'title': 'Регистрация', 'url_name': 'create_client'},
+        {'title': 'Вход', 'url_name': 'login'}]
 
 
-def create_client(request):
+def index(request):
+    context = {'menu': menu}
+    return render(request, 'my_tinder/index.html', context=context)
+
+
+def registration(request):
     if request.method == 'GET':
 
         form = CreateClientForm()
@@ -43,8 +50,7 @@ def create_client(request):
             return render(request, 'my_tinder/create_client.html', {'form': bound_form})
 
 
-def show_client(request, id):
-
+def client_page(request, id):
     client: CustomUser = get_object_or_404(CustomUser, id=id)
     client_info = {'avatar': client.avatar,
                    'gender': client.gender,
@@ -63,8 +69,18 @@ def login_client(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            # Redirect to a success page.
-            #return redirect('show_client')
-            return show_client(request, user.id)
+            # Перенаправление на страницу участника
+            return redirect('show_client_page', id=user.id)
         else:
             return render(request, 'my_tinder/login_page.html', {'form': AuthenticationForm})
+
+
+def clients_page(request):
+    if request.method == 'GET':
+
+        clients: QuerySet = CustomUser.objects.all()
+
+        for client in clients:
+            print(client.last_name)
+        context = {'clients': clients}
+        return render(request, 'my_tinder/watch_clients.html', context=context)
