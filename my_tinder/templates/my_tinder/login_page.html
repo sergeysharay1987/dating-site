@@ -5,10 +5,11 @@
 Регистрация
 {% endblock %}
 {% block content %}
+<a href='{% url "index" %}'>Вернуться на главную страницу</a>
 <h1>Авторизация участника</h1>
 
 
-<form action=" {% url 'login_client' %}" method="post" enctype="multipart/form-data" >
+<form action="{% url 'login' %}" method="post" enctype="multipart/form-data" >
     {% csrf_token %}
 
     {% for field in form %}
