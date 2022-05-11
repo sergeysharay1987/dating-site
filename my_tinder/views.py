@@ -14,8 +14,7 @@ app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
 path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изображения, содержащее водяной знак
 
-
-menu = [{'title': 'Регистрация', 'url_name': 'create_client'},
+menu = [{'title': 'Регистрация', 'url_name': 'registration'},
         {'title': 'Вход', 'url_name': 'login'}]
 
 
@@ -28,7 +27,7 @@ def registration(request):
     if request.method == 'GET':
 
         form = CreateClientForm()
-        return render(request, 'my_tinder/create_client.html', {'form': form})
+        return render(request, 'my_tinder/registration.html', {'form': form})
 
     elif request.method == 'POST':
 
@@ -44,10 +43,10 @@ def registration(request):
             data = bound_form.cleaned_data
             bound_form = CreateClientForm(data, file_data)
             bound_form.save()
-            return render(request, 'my_tinder/create_client.html', {'form': bound_form})
+            return render(request, 'my_tinder/registration.html', {'form': bound_form})
         else:
 
-            return render(request, 'my_tinder/create_client.html', {'form': bound_form})
+            return render(request, 'my_tinder/registration.html', {'form': bound_form})
 
 
 def client_page(request, id):
@@ -56,31 +55,36 @@ def client_page(request, id):
                    'gender': client.gender,
                    'first_name': client.first_name,
                    'last_name': client.last_name}
-    context = {'client': client_info}
+    context = {'client': client_info, 'client_id': client.pk}
     return render(request, 'my_tinder/client_page.html', context)
 
 
 def login_client(request):
     if request.method == 'GET':
-        return render(request, 'my_tinder/login_page.html', {'form': AuthenticationForm})
+
+        bound_form = AuthenticationForm()
+        return render(request, 'my_tinder/login_page.html', {'form': bound_form})
     if request.method == 'POST':
+
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            # Перенаправление на страницу участника
-            return redirect('show_client_page', id=user.id)
+        data = {'username':username, 'password':password}
+        bound_form = AuthenticationForm(request, data)
+        if bound_form.is_valid():
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                # Перенаправление на страницу участника
+                return redirect('client_page', id=user.id)
         else:
-            return render(request, 'my_tinder/login_page.html', {'form': AuthenticationForm})
+
+            return render(request, 'my_tinder/login_page.html', {'form': bound_form})
 
 
 def clients_page(request):
+
     if request.method == 'GET':
 
         clients: QuerySet = CustomUser.objects.all()
-
-        for client in clients:
-            print(client.last_name)
         context = {'clients': clients}
-        return render(request, 'my_tinder/watch_clients.html', context=context)
+        return render(request, 'my_tinder/clients_page.html', context=context)
