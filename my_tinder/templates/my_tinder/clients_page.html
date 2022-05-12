@@ -1,6 +1,7 @@
 {% extends 'my_tinder/base_my_tinder.html' %}
 
 {% block content%}
+<a href = '{% url "client_page" id=request_user_id %}'>Вернуться на свою страницу</a>
 <h1>Другие участники</h1>
  <div class="header">
     <ul>
