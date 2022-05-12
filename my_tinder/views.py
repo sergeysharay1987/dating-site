@@ -55,7 +55,7 @@ def client_page(request, id):
                    'gender': client.gender,
                    'first_name': client.first_name,
                    'last_name': client.last_name}
-    context = {'client': client_info, 'client_id': client.pk}
+    context = {'client_info': client_info, 'client_id': client.pk, 'client_email': client.email}
     return render(request, 'my_tinder/client_page.html', context)
 
 
@@ -68,7 +68,7 @@ def login_client(request):
 
         username = request.POST['username']
         password = request.POST['password']
-        data = {'username':username, 'password':password}
+        data = {'username': username, 'password': password}
         bound_form = AuthenticationForm(request, data)
         if bound_form.is_valid():
             user = authenticate(request, username=username, password=password)
@@ -86,5 +86,5 @@ def clients_page(request):
     if request.method == 'GET':
 
         clients: QuerySet = CustomUser.objects.all()
-        context = {'clients': clients}
+        context = {'clients': clients, 'request_user_id': request.user.id}
         return render(request, 'my_tinder/clients_page.html', context=context)
