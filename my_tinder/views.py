@@ -1,21 +1,22 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
+from dating_site.settings import BASE_DIR
 from django.db.models import QuerySet
 from .apps import MyTinderConfig
 from PIL import Image
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import AuthenticationForm
 from my_tinder.models import CustomUser
-from django.shortcuts import render, get_object_or_404, redirect
-from dating_site.settings import BASE_DIR
 from .forms import CreateClientForm
-from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from .my_tinder_services.put_watermark import put_watermark
 
 app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
 path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изображения, содержащее водяной знак
 
-menu = [{'title': 'Регистрация', 'url_name': 'registration'},
-        {'title': 'Вход', 'url_name': 'login'}]
+menu = [{'title': 'Зарегистрироваться', 'url_name': 'registration'},
+        {'title': 'Войти', 'url_name': 'login'}]
 
 
 def index(request):
@@ -49,19 +50,19 @@ def registration(request):
             return render(request, 'my_tinder/registration.html', {'form': bound_form})
 
 
+@login_required()
 def client_page(request, id):
     client: CustomUser = get_object_or_404(CustomUser, id=id)
     client_info = {'avatar': client.avatar,
                    'gender': client.gender,
                    'first_name': client.first_name,
                    'last_name': client.last_name}
-    context = {'client_info': client_info, 'client_id': client.pk, 'client_email': client.email}
+    context = {'client_info': client_info, 'client_email': client.email, 'client': client}
     return render(request, 'my_tinder/client_page.html', context)
 
 
 def login_client(request):
     if request.method == 'GET':
-
         bound_form = AuthenticationForm()
         return render(request, 'my_tinder/login_page.html', {'form': bound_form})
     if request.method == 'POST':
@@ -81,10 +82,14 @@ def login_client(request):
             return render(request, 'my_tinder/login_page.html', {'form': bound_form})
 
 
+def logout_client(request):
+    logout(request)
+    return redirect('login', permanent=True)
+
+
+@login_required()
 def clients_page(request):
-
     if request.method == 'GET':
-
         clients: QuerySet = CustomUser.objects.all()
         context = {'clients': clients, 'request_user_id': request.user.id}
         return render(request, 'my_tinder/clients_page.html', context=context)
