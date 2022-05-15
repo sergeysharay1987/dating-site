@@ -23,6 +23,6 @@ urlpatterns = [
     path('clients/create/', registration, name='registration'),
     path('login/', login_client, name='login'),
     path('logout/', logout_client, name='logout'),
-    path('clients/', clients_page, name='watch_clients'),
-    path('clients/<int:id>/', client_page, name='client_page')
+    path('clients/<int:id>/', client_page, name='client_page'),
+    path('clients/<int:id>/other_clients', clients_page, name='watch_clients')
 ]
