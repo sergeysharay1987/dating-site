@@ -53,16 +53,23 @@ def registration(request):
 @login_required()
 def client_page(request, id):
     client: CustomUser = get_object_or_404(CustomUser, id=id)
-    client_info = {'avatar': client.avatar,
-                   'gender': client.gender,
-                   'first_name': client.first_name,
-                   'last_name': client.last_name}
-    context = {'client_info': client_info, 'client_email': client.email, 'client': client}
-    return render(request, 'my_tinder/client_page.html', context)
+    if id == request.user.id:
+
+        client_info = {'avatar': client.avatar,
+                       'gender': client.gender,
+                       'first_name': client.first_name,
+                       'last_name': client.last_name}
+        context = {'client_info': client_info,
+                   'client_email': client.email,
+                   'client': client}
+        return render(request, 'my_tinder/client_page.html', context)
+    else:
+        return redirect('client_page', id=request.user.id)
 
 
 def login_client(request):
     if request.method == 'GET':
+
         bound_form = AuthenticationForm()
         return render(request, 'my_tinder/login_page.html', {'form': bound_form})
     if request.method == 'POST':
@@ -74,9 +81,10 @@ def login_client(request):
         if bound_form.is_valid():
             user = authenticate(request, username=username, password=password)
             if user is not None:
+
                 login(request, user)
                 # Перенаправление на страницу участника
-                return redirect('client_page', id=user.id)
+                return redirect('client_page', id=request.user.id)
         else:
 
             return render(request, 'my_tinder/login_page.html', {'form': bound_form})
@@ -88,8 +96,14 @@ def logout_client(request):
 
 
 @login_required()
-def clients_page(request):
+def clients_page(request, id):
+
     if request.method == 'GET':
-        clients: QuerySet = CustomUser.objects.all()
-        context = {'clients': clients, 'request_user_id': request.user.id}
-        return render(request, 'my_tinder/clients_page.html', context=context)
+        if id == request.user.id:
+
+            clients: QuerySet = CustomUser.objects.all()
+            context = {'clients': clients,
+                       'request_user_id': request.user.id}
+            return render(request, 'my_tinder/clients_page.html', context=context)
+        else:
+            return redirect('watch_clients', id=request.user.id)
