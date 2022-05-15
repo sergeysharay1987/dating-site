@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 
-<a href = '{% url "watch_clients" %}'>Посмотреть других участников </a>
+<a href = '{% url "watch_clients" id=request.user.id %}'>Посмотреть других участников </a>
 <h1>Вы вошли как {{ client_email }}</h1>
 
 
@@ -21,21 +21,6 @@
 
 {% endfor %}
 
-
-
-
-
-
-
-
-
-<!--
-<div>
- <img src="{{ client.avatar.url}}" alt="connect" style="max-height:500px">
-  <p>{{ client.gender }}</p>
-  <p>{{ client.first_name }}</p>
-  <p>{{ client.last_name }}</p>
-</div>-->
 {% endblock %}
 
 
