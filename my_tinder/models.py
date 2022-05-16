@@ -41,9 +41,12 @@ class CustomUser(AbstractUser):
     username = None
     email = EmailField(verbose_name='Электронная почта', unique=True)
 
-    MALE = 'М'
-    FEMALE = 'Ж'
-    GENDERS = ((MALE, 'Мужской'),
+    EMPTY_VALUE = ''
+    MALE = 'Мужской'
+    FEMALE = 'Женский'
+
+    GENDERS = ((EMPTY_VALUE, 'Выберите пол'),
+               (MALE, 'Мужской'),
                (FEMALE, 'Женский'))
 
     avatar = ImageField(verbose_name='Фото', upload_to='photos/%Y/%m/%d')
