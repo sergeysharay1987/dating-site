@@ -1,16 +1,52 @@
 {% extends 'my_tinder/base_my_tinder.html' %}
 
-{% block content%}
-<a href = '{% url "client_page" id=request_user_id %}'>Вернуться на свою страницу</a>
+
+<!--<a href = '{% url "client_page" id=request_user_id %}'>Вернуться на свою страницу</a>
 <h1>Другие участники</h1>
  <div class="header">
     <ul>
     {% for client in clients %}
-        <p>{{ client.avatar }}</p>
+
+        <img src="{{ client.avatar.url }}" alt="connect" style="max-height:300px">
         <p>{{ client.first_name }}</p>
 
     {% endfor %}
 
-{% endblock%}
+
     </ul>
-    </div>
+    </div>-->
+
+
+
+
+{% block content%}
+<h1>Другие участники</h1>
+<div class="card" style="width: 18rem;">
+  <!--<img src="..." class="card-img-top" alt="...">-->
+  <div class="card-body">
+    <h5 class="card-title">{{ client.email }}</h5>
+    <ul>
+    {% for client in clients %}
+
+        <img src="{{ client.avatar.url }}" alt="connect" style="max-height:300px">
+        <p>{{ client.last_name }}</p>
+<select name="gender" required="" id="id_gender">
+  <option value="" selected="">---------</option>
+
+  <option value="Мужской">Нравится</option>
+
+  <option value="Женский">Не нравится</option>
+
+</select>
+
+
+
+    <a href="#" >Страница участника {{ client.email }}</a>
+    {% endfor %}
+
+
+    </ul>
+
+  </div>
+</div>
+{% endblock %}
