@@ -69,7 +69,6 @@ def client_page(request, id):
 
 def login_client(request):
     if request.method == 'GET':
-
         bound_form = AuthenticationForm()
         return render(request, 'my_tinder/login_page.html', {'form': bound_form})
     if request.method == 'POST':
@@ -81,7 +80,6 @@ def login_client(request):
         if bound_form.is_valid():
             user = authenticate(request, username=username, password=password)
             if user is not None:
-
                 login(request, user)
                 # Перенаправление на страницу участника
                 return redirect('client_page', id=request.user.id)
@@ -97,7 +95,6 @@ def logout_client(request):
 
 @login_required()
 def clients_page(request, id):
-
     if request.method == 'GET':
         if id == request.user.id:
 
@@ -107,3 +104,9 @@ def clients_page(request, id):
             return render(request, 'my_tinder/clients_page.html', context=context)
         else:
             return redirect('watch_clients', id=request.user.id)
+
+
+# Вьюха для просмотра подробной информации о другом участнике
+@login_required()
+def other_client_page(request, id):
+    pass
