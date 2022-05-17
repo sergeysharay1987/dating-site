@@ -1,0 +1,24 @@
+{% extends 'my_tinder/base_my_tinder.html' %}
+{% load verbose_names %}
+
+
+{% block title %}
+Страница участника {{ other_client.email }}
+{% endblock %}
+{% block content %}
+
+
+<h1>Страница пользователя {{ other_client_email }}</h1>
+
+
+    {% for field_name, value in other_client_info.items %}
+        {% if value.url %}
+        <p>{% get_verbose_field_name other_client field_name %}</p>
+        <img src="{{ value.url }}" alt="connect" style="max-height:500px">
+        {% else %}
+            <p>{% get_verbose_field_name other_client field_name %}: {{ value }}</p>
+        {% endif %}
+
+{% endfor %}
+
+{% endblock %}
