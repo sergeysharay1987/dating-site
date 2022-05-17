@@ -108,5 +108,21 @@ def clients_page(request, id):
 
 # Вьюха для просмотра подробной информации о другом участнике
 @login_required()
-def other_client_page(request, id):
-    pass
+def other_client_page(request, id, other_client_id):
+    if id == request.user.id:
+
+        other_client = get_object_or_404(CustomUser, id=other_client_id)
+        other_client_info = {'avatar': other_client.avatar,
+                             'gender': other_client.gender,
+                             'first_name': other_client.first_name,
+                             'last_name': other_client.last_name}
+
+        context = {'id': id,
+                   'other_client_id': other_client.id,
+                   'other_client_info': other_client_info,
+                   'other_client_email': other_client.email,
+                   'other_client': other_client}
+
+        return render(request, 'my_tinder/other_client_page.html', context)
+    else:
+        return redirect('other_client_detail', id=request.user.id, other_client_id=other_client_id)
