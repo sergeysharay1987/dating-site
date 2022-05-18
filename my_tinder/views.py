@@ -99,8 +99,8 @@ def clients_page(request, id):
         if id == request.user.id:
 
             clients: QuerySet = CustomUser.objects.all()
-            context = {'clients': clients,
-                       'request_user_id': request.user.id}
+            context = {'id': id,
+                        'clients': clients}
             return render(request, 'my_tinder/clients_page.html', context=context)
         else:
             return redirect('watch_clients', id=request.user.id)
