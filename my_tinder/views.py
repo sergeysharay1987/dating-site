@@ -115,7 +115,8 @@ def other_client_page(request, id, other_client_id):
         other_client_info = {'avatar': other_client.avatar,
                              'gender': other_client.gender,
                              'first_name': other_client.first_name,
-                             'last_name': other_client.last_name}
+                             'last_name': other_client.last_name,
+                             'like': other_client.like}
 
         context = {'id': id,
                    'other_client_id': other_client.id,

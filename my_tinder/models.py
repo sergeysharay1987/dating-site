@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import CharField, ImageField, EmailField
+from django.db.models import CharField, ImageField, EmailField, ForeignKey, TextField, CASCADE, BooleanField, Model
 from django.contrib.auth.models import AbstractUser
+from django.forms import Select
 from django.utils.translation import gettext_lazy as _
 
 
@@ -49,14 +50,26 @@ class CustomUser(AbstractUser):
                (MALE, 'Мужской'),
                (FEMALE, 'Женский'))
 
+    LIKE = 'Нравится'
+    DISLIKE = 'Не_нравится'
+
+    LIKES = ((LIKE, 'Нравится'),
+             (DISLIKE, 'Не нравится'))
+
     avatar = ImageField(verbose_name='Фото', upload_to='photos/%Y/%m/%d')
     gender = CharField(verbose_name='Пол', max_length=7, choices=GENDERS)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+    likes = CharField(max_length=100, choices=LIKES)
+    liked_users = ForeignKey('LikedUsers', on_delete=CASCADE, blank=True, null=True)
 
     objects = CustomUserManager()
 
     class Meta:
         verbose_name = 'Участник'
         verbose_name_plural = 'Участники'
+
+
+class LikedUsers(Model):
+    email = TextField()
