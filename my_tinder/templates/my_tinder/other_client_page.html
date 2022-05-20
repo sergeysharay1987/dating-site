@@ -21,7 +21,7 @@
 
 
     {% endfor %}
-<form action="#" method="post">
+<form action='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}' method="post">
     {% csrf_token %}
     <p>{{ form }}</p>
 </form>
