@@ -8,7 +8,7 @@ from django.db.models import QuerySet
 from .apps import MyTinderConfig
 from PIL import Image
 from my_tinder.models import CustomUser
-from .forms import CreateClientForm
+from .forms import CreateClientForm, ToLikeClientForm
 from .my_tinder_services.put_watermark import put_watermark
 
 app_name = MyTinderConfig.name  # название приложения
@@ -109,21 +109,27 @@ def clients_page(request, id):
 # Вьюха для просмотра подробной информации о другом участнике
 @login_required()
 def other_client_page(request, id, other_client_id):
-    if id == request.user.id:
+    other_client = get_object_or_404(CustomUser, id=other_client_id)
+    form = ToLikeClientForm()
+    other_client_info = {'avatar': other_client.avatar,
+                         'gender': other_client.gender,
+                         'first_name': other_client.first_name,
+                         'last_name': other_client.last_name}
 
-        other_client = get_object_or_404(CustomUser, id=other_client_id)
-        other_client_info = {'avatar': other_client.avatar,
-                             'gender': other_client.gender,
-                             'first_name': other_client.first_name,
-                             'last_name': other_client.last_name,
-                             'like': other_client.like}
+    context = {'id': id,
+               'other_client_id': other_client.id,
+               'other_client_info': other_client_info,
+               'other_client_email': other_client.email,
+               'other_client': other_client,
+               'form': form}
+    if request.method == 'GET':
+        # Проверяем, что id переданный в urlе совпадает с request.user.id
+        if id == request.user.id:
 
-        context = {'id': id,
-                   'other_client_id': other_client.id,
-                   'other_client_info': other_client_info,
-                   'other_client_email': other_client.email,
-                   'other_client': other_client}
-
+            return render(request, 'my_tinder/other_client_page.html', context)
+        else:
+            return redirect('other_client_detail', id=request.user.id, other_client_id=other_client_id)
+    if request.method == 'POST':
+        bound_form = ToLikeClientForm(request.POST)
         return render(request, 'my_tinder/other_client_page.html', context)
-    else:
-        return redirect('other_client_detail', id=request.user.id, other_client_id=other_client_id)
+
