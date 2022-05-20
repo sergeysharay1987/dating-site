@@ -50,18 +50,11 @@ class CustomUser(AbstractUser):
                (MALE, 'Мужской'),
                (FEMALE, 'Женский'))
 
-    LIKE = 'Нравится'
-    DISLIKE = 'Не_нравится'
-
-    LIKES = ((LIKE, 'Нравится'),
-             (DISLIKE, 'Не нравится'))
-
     avatar = ImageField(verbose_name='Фото', upload_to='photos/%Y/%m/%d')
     gender = CharField(verbose_name='Пол', max_length=7, choices=GENDERS)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-    likes = CharField(max_length=100, choices=LIKES)
     liked_users = ForeignKey('LikedUsers', on_delete=CASCADE, blank=True, null=True)
 
     objects = CustomUserManager()
