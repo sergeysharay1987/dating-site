@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -7,7 +8,7 @@ from dating_site.settings import BASE_DIR
 from django.db.models import QuerySet
 from .apps import MyTinderConfig
 from PIL import Image
-from my_tinder.models import CustomUser
+from my_tinder.models import CustomUser, LikedUsers
 from .forms import CreateClientForm, ToLikeClientForm
 from .my_tinder_services.put_watermark import put_watermark
 
@@ -52,7 +53,7 @@ def registration(request):
 
 @login_required()
 def client_page(request, id):
-    client: CustomUser = get_object_or_404(CustomUser, id=id)
+    client: CustomUser = CustomUser.objects.get(id=id)
     if id == request.user.id:
 
         client_info = {'avatar': client.avatar,
@@ -98,9 +99,9 @@ def clients_page(request, id):
     if request.method == 'GET':
         if id == request.user.id:
 
-            clients: QuerySet = CustomUser.objects.all()
+            other_clients: QuerySet = CustomUser.objects.all()
             context = {'id': id,
-                        'clients': clients}
+                       'other_clients': other_clients}
             return render(request, 'my_tinder/clients_page.html', context=context)
         else:
             return redirect('watch_clients', id=request.user.id)
@@ -131,5 +132,21 @@ def other_client_page(request, id, other_client_id):
             return redirect('other_client_detail', id=request.user.id, other_client_id=other_client_id)
     if request.method == 'POST':
         bound_form = ToLikeClientForm(request.POST)
-        return render(request, 'my_tinder/other_client_page.html', context)
+        context['bound_form'] = bound_form
+        # Проверяем что, если нажата кнопка "Нравится"
+        if bound_form['like']:
+            # Проверяем есть ли участник с таким email в таблице my_tinder_likedusers, то есть был ли участник
+            # лайкнут раньще
+            try:
+                LikedUsers.objects.get(email=other_client.email)
+            # Если участника с таким email нету в таблице my_tinder_likedusers, то заносим его в таблиицу
+            except ObjectDoesNotExist:
 
+                # Создаём обьект класса LikedUsers, значение email берём из объекта other_client, то есть из объекта,
+                # страницу которого мы просматриваем
+                liked_client = LikedUsers(email=other_client.email)
+                liked_client.save()
+                # Если участник с таким mail есть в таблице my_tinder_likedusers, то ничего не делаем
+            else:
+                pass
+            return render(request, 'my_tinder/other_client_page.html', context)
