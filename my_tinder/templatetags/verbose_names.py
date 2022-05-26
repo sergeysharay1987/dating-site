@@ -1,9 +1,12 @@
 from django import template
+from ..models import LikedUsers
+
 register = template.Library()
+
 
 @register.simple_tag
 def get_verbose_field_name(instance, field_name):
     """
-    Returns verbose_name for a field.
+    Возвращает verbose_name для каждого поля.
     """
     return instance._meta.get_field(field_name).verbose_name.title()
