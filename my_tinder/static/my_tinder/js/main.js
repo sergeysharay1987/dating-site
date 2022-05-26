@@ -1,25 +1,20 @@
 $(document).ready(function(){
+    // Получаем значение csrf_token //
+    var csrf = $('input[name="csrfmiddlewaretoken').val();
 
-    $("z").mouseover(function(){
+    $(".btn").click(function(){
         $.ajax({
-            url: $('form').attr('action'),
-            type: 'get',
+        // Получаем url из атрибута data-url тега button //
+            url: $('button').attr('data-url'),
+            type: 'post',
             data: {
-                button_text: $(this).attr('value')
+            // Получаем emaail другого участника из атрибута id тега h1//
+                other_client_email: $('h1').attr('id'),
+                csrfmiddlewaretoken: csrf
             },
-            success: function(button_text){
-                alert('Congrats!' + button_text)
-                console.log(button_text)
+            success: function(response) {
+                $(".btn").attr('class')
             }
         });
     });
-
-
-
-    /*$('#id_like').mouseover(function(){
-        //let attr_name = $('html body div.container.mt-5 div.row div.col-7.offset-md-3 h1').text()
-        let form_attr_action = $('form').attr('action')
-        //alert(attr_name)
-        alert(form_attr_action)
-    });*/
 });
