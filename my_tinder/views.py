@@ -131,22 +131,25 @@ def other_client_page(request, id, other_client_id):
         else:
             return redirect('other_client_detail', id=request.user.id, other_client_id=other_client_id)
     if request.method == 'POST':
-        bound_form = ToLikeClientForm(request.POST)
-        context['bound_form'] = bound_form
-        # Проверяем что, если нажата кнопка "Нравится"
-        if bound_form['like']:
+        # Получаем email, переданный при помощи ajax запроса
+        other_client_email = request.POST.get('other_client_email')
+        try:
             # Проверяем есть ли участник с таким email в таблице my_tinder_likedusers, то есть был ли участник
-            # лайкнут раньще
-            try:
-                LikedUsers.objects.get(email=other_client.email)
-            # Если участника с таким email нету в таблице my_tinder_likedusers, то заносим его в таблиицу
-            except ObjectDoesNotExist:
+            # лайкнут раньше
+            LikedUsers.objects.get(email=other_client_email)
 
-                # Создаём обьект класса LikedUsers, значение email берём из объекта other_client, то есть из объекта,
-                # страницу которого мы просматриваем
-                liked_client = LikedUsers(email=other_client.email)
-                liked_client.save()
-                # Если участник с таким mail есть в таблице my_tinder_likedusers, то ничего не делаем
-            else:
-                pass
-            return render(request, 'my_tinder/other_client_page.html', context)
+        except ObjectDoesNotExist:
+            # Если участника с таким email нету в таблице my_tinder_likedusers, то заносим его в таблицу
+            # Создаём объект класса LikedUsers, значение email берём из объекта other_client, то есть из объекта,
+            # страницу которого мы просматриваем
+            liked_client = LikedUsers(email=other_client_email)
+            liked_client.save()
+            # Если участник с таким mail есть в таблице my_tinder_likedusers, то ничего не делаем
+        else:
+            # Если email другого участника есть в бд, то в переменную context добавляем ключ, значение которого будет
+            # использовано в шаблоне, для отображения
+            # нажатой кнопки
+            context.get('email_exist', 'success')
+            pass
+
+        return render(request, 'my_tinder/other_client_page.html', context)
