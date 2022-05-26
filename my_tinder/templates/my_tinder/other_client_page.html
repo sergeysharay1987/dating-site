@@ -7,22 +7,41 @@
 {% endblock %}
 {% block content %}
 
-
-<h1 id="other_client_email">Страница пользователя {{ other_client_email }}</h1>
+<!--Атрибут id используется для получения email участника для отправки ajax запроса (post запроса) в файле main.js
+В дальнейшем этот email будет использоваться в функции представлении фреймворка django -->
+<h1 id="{{ other_client_email }}">Страница пользователя {{ other_client_email }}</h1>
 
 
     {% for field_name, value in other_client_info.items %}
         {% if value.url %}
+<!--Использую свой шаблонный тег get_verbose_field_name для получения атрибута verbose_name объекта класса CustomUser-->
         <p>{% get_verbose_field_name other_client field_name %}</p>
         <img src="{{ value.url }}" alt="connect" style="max-height:500px">
         {% else %}
-            <p>{% get_verbose_field_name other_client field_name %}: {{ value }}</p>
+            <p id='{{ field_name }}'>{% get_verbose_field_name other_client field_name %}: {{ value }}</p>
         {% endif %}
 
 
     {% endfor %}
-<form action='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}' method="post">
+
+<div class="container mt-3">
+    <div class="col-5 offset-md-3">
+        <!--Записываем значение собственного шаблонного тега в переменную email_to_check-->
+
+        <!--Если интересующего нас email нету в бд, то отображаем кнопку не нажатой-->
+        {% if email_exist %}
+            <button id="is_like" type="button" class="btn btn-{{ email_exist }}" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
+            <button type="button" class="btn btn-light" data-url='#'>Не нравится</button>
+        {% else %}
+            <button id="is_not_like" type="button" class="btn btn-light" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
+            <button type="button" class="btn btn-{{ email_exist }}" data-url='#'>Не нравится</button>
+        {% endif %}
+
+    {% csrf_token %}
+        </div>
+</div>
+<!--<form action='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}' method="post">
     {% csrf_token %}
     <p>{{ form }}</p>
-</form>
+</form>-->
 {% endblock %}
