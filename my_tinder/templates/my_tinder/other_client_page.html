@@ -26,15 +26,13 @@
 
 <div class="container mt-3">
     <div class="col-5 offset-md-3">
-        <!--Записываем значение собственного шаблонного тега в переменную email_to_check-->
-
         <!--Если интересующего нас email нету в бд, то отображаем кнопку не нажатой-->
         {% if email_exist %}
-            <button id="is_like" type="button" class="btn btn-{{ email_exist }}" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
+            <button id="is_like" type="button" class="{{ email_exist }}" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
             <button type="button" class="btn btn-light" data-url='#'>Не нравится</button>
         {% else %}
             <button id="is_not_like" type="button" class="btn btn-light" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
-            <button type="button" class="btn btn-{{ email_exist }}" data-url='#'>Не нравится</button>
+            <button type="button" class="{{ email_exist }}" data-url='#'>Не нравится</button>
         {% endif %}
 
     {% csrf_token %}
