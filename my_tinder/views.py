@@ -110,7 +110,8 @@ def clients_page(request, id):
 # Вьюха для просмотра подробной информации о другом участнике
 @login_required()
 def other_client_page(request, id, other_client_id):
-    other_client = get_object_or_404(CustomUser, id=other_client_id)
+
+    other_client = CustomUser.objects.get(id=other_client_id)
     form = ToLikeClientForm()
     other_client_info = {'avatar': other_client.avatar,
                          'gender': other_client.gender,
@@ -123,6 +124,7 @@ def other_client_page(request, id, other_client_id):
                'other_client_email': other_client.email,
                'other_client': other_client,
                'form': form}
+
     if request.method == 'GET':
         # Проверяем, что id переданный в urlе совпадает с request.user.id
         if id == request.user.id:
@@ -143,13 +145,16 @@ def other_client_page(request, id, other_client_id):
             # Создаём объект класса LikedUsers, значение email берём из объекта other_client, то есть из объекта,
             # страницу которого мы просматриваем
             liked_client = LikedUsers(email=other_client_email)
-            liked_client.save()
+            # liked_client.save()
+            other_client.update(liked_users_id=liked_client)
+            other_client.save()
+
             # Если участник с таким mail есть в таблице my_tinder_likedusers, то ничего не делаем
         else:
             # Если email другого участника есть в бд, то в переменную context добавляем ключ, значение которого будет
             # использовано в шаблоне, для отображения
             # нажатой кнопки
-            context.get('email_exist', 'success')
+            context.setdefault('email_exist', 'btn btn-success')
             pass
 
         return render(request, 'my_tinder/other_client_page.html', context)
