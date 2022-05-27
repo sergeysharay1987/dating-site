@@ -13,7 +13,7 @@ $(document).ready(function(){
                 csrfmiddlewaretoken: csrf
             },
             success: function(response) {
-                $(".btn").attr('class')
+                console.log($("#is_like").attr('class'))
             }
         });
     });
