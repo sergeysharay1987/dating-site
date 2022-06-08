@@ -8,7 +8,7 @@ from dating_site.settings import BASE_DIR
 from django.db.models import QuerySet
 from .apps import MyTinderConfig
 from PIL import Image
-from my_tinder.models import CustomUser, LikedUsers
+from my_tinder.models import CustomUser
 from .forms import CreateClientForm, ToLikeClientForm
 from .my_tinder_services.put_watermark import put_watermark
 
@@ -99,7 +99,9 @@ def clients_page(request, id):
     if request.method == 'GET':
         if id == request.user.id:
 
+            auth_user = CustomUser.objects.get(id=id)
             other_clients: QuerySet = CustomUser.objects.all()
+            other_clients = other_clients.exclude(id=auth_user.id)
             context = {'id': id,
                        'other_clients': other_clients}
             return render(request, 'my_tinder/clients_page.html', context=context)
@@ -111,7 +113,8 @@ def clients_page(request, id):
 @login_required()
 def other_client_page(request, id, other_client_id):
 
-    other_client = CustomUser.objects.get(id=other_client_id)
+    auth_user: CustomUser = CustomUser.objects.get(id=id)
+    other_client: CustomUser = CustomUser.objects.get(id=other_client_id)
     form = ToLikeClientForm()
     other_client_info = {'avatar': other_client.avatar,
                          'gender': other_client.gender,
@@ -119,14 +122,14 @@ def other_client_page(request, id, other_client_id):
                          'last_name': other_client.last_name}
 
     context = {'id': id,
-               'other_client_id': other_client.id,
+               'other_client_id': other_client.pk,
                'other_client_info': other_client_info,
                'other_client_email': other_client.email,
                'other_client': other_client,
                'form': form}
 
     if request.method == 'GET':
-        # Проверяем, что id переданный в urlе совпадает с request.user.id
+        # Проверяем, что id передан.qный в urlе совпадает с request.user.id
         if id == request.user.id:
 
             return render(request, 'my_tinder/other_client_page.html', context)
@@ -138,23 +141,17 @@ def other_client_page(request, id, other_client_id):
         try:
             # Проверяем есть ли участник с таким email в таблице my_tinder_likedusers, то есть был ли участник
             # лайкнут раньше
-            LikedUsers.objects.get(email=other_client_email)
+            auth_user.liked_users.get(email=other_client_email)
+            # CustomUser.objects.get(email=other_client_email)
 
         except ObjectDoesNotExist:
             # Если участника с таким email нету в таблице my_tinder_likedusers, то заносим его в таблицу
             # Создаём объект класса LikedUsers, значение email берём из объекта other_client, то есть из объекта,
             # страницу которого мы просматриваем
-            liked_client = LikedUsers(email=other_client_email)
-            # liked_client.save()
-            other_client.update(liked_users_id=liked_client)
-            other_client.save()
+            auth_user.customuser_set.add(other_client)
 
-            # Если участник с таким mail есть в таблице my_tinder_likedusers, то ничего не делаем
         else:
-            # Если email другого участника есть в бд, то в переменную context добавляем ключ, значение которого будет
-            # использовано в шаблоне, для отображения
-            # нажатой кнопки
-            context.setdefault('email_exist', 'btn btn-success')
+            # Если участник с таким mail есть в таблице my_tinder_likedusers, то ничего не делаем
             pass
 
         return render(request, 'my_tinder/other_client_page.html', context)
