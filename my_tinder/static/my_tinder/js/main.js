@@ -8,7 +8,7 @@ $(document).ready(function(){
             url: $('button').attr('data-url'),
             type: 'post',
             data: {
-            // Получаем emaail другого участника из атрибута id тега h1//
+            // Получаем email другого участника из атрибута id тега h1//
                 other_client_email: $('h1').attr('id'),
                 csrfmiddlewaretoken: csrf
             },
