@@ -1,5 +1,4 @@
 from django import template
-from ..models import LikedUsers
 
 register = template.Library()
 
