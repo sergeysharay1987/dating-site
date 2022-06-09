@@ -115,7 +115,6 @@ def other_client_page(request, id, other_client_id):
 
     auth_user: CustomUser = CustomUser.objects.get(id=id)
     other_client: CustomUser = CustomUser.objects.get(id=other_client_id)
-    form = ToLikeClientForm()
     other_client_info = {'avatar': other_client.avatar,
                          'gender': other_client.gender,
                          'first_name': other_client.first_name,
@@ -126,7 +125,7 @@ def other_client_page(request, id, other_client_id):
                'other_client_info': other_client_info,
                'other_client_email': other_client.email,
                'other_client': other_client,
-               'form': form}
+               'auth_user': auth_user}
 
     if request.method == 'GET':
         # Проверяем, что id передан.qный в urlе совпадает с request.user.id
@@ -141,8 +140,7 @@ def other_client_page(request, id, other_client_id):
         try:
             # Проверяем есть ли участник с таким email в таблице my_tinder_likedusers, то есть был ли участник
             # лайкнут раньше
-            auth_user.liked_users.get(email=other_client_email)
-            # CustomUser.objects.get(email=other_client_email)
+            auth_user.customuser_set.get(email=other_client_email)
 
         except ObjectDoesNotExist:
             # Если участника с таким email нету в таблице my_tinder_likedusers, то заносим его в таблицу
