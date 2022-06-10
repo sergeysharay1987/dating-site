@@ -26,13 +26,16 @@
 
 <div class="container mt-3">
     <div class="col-5 offset-md-3">
+        {% get_liked_users auth_user other_client as liked_user %}
+        {% if liked_user %}
+        <h1> {{ liked_user }} </h1>
         <!--Если интересующего нас email нету в бд, то отображаем кнопку не нажатой-->
-        {% if email_exist %}
-            <button type="button" class="btn btn-primary" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
-            <button type="button" class="btn btn-primary" data-url='#'>Не нравится</button>
+
+            <button id="is_like" type="button" class="btn btn-success" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
+            <button type="button" class="btn btn-light" data-url='#'>Не нравится</button>
         {% else %}
             <button type="button" class="btn btn-light" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
-            <button type="button" class="{{ email_exist }}" data-url='#'>Не нравится</button>
+            <button type="button" class="btn btn-light" data-url='#'>Не нравится</button>
         {% endif %}
 
     {% csrf_token %}
