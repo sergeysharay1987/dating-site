@@ -1,11 +1,13 @@
 $(document).ready(function(){
     // Получаем значение csrf_token //
-    var csrf = $('input[name="csrfmiddlewaretoken').val();
+    var csrf = $('input[name="csrfmiddlewaretoken]').val();
 
-    $(".btn").click(function(){
+    $('#is_like').click(function(){
+        $('#is_like').attr('class', 'btn btn-light'));
+
         $.ajax({
         // Получаем url из атрибута data-url тега button //
-            url: $('button').attr('data-url'),
+            url: $('#is_like').attr('data-url'),
             type: 'post',
             data: {
             // Получаем email другого участника из атрибута id тега h1//
@@ -13,7 +15,8 @@ $(document).ready(function(){
                 csrfmiddlewaretoken: csrf
             },
             success: function(response) {
-                console.log($("#is_like").attr('class'))
+                console.log($('#is_like').attr('class')));
+
             }
         });
     });
