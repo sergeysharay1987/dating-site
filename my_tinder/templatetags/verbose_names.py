@@ -12,8 +12,9 @@ def get_verbose_field_name(instance: CustomUser, field_name: str):
     return instance._meta.get_field(field_name).verbose_name.title()
 
 
-def get_liked_users(instance: CustomUser):
+@register.simple_tag
+def get_liked_users(instance: CustomUser, obj):
     """
     Возвращает QuerySet дочерней модели.
     """
-    return instance.customuser_set.all()
+    return instance.customuser_set.contains(obj)
