@@ -31,7 +31,7 @@
         <h1> {{ liked_user }} </h1>
         <!--Если интересующего нас email нету в бд, то отображаем кнопку не нажатой-->
 
-            <button id="is_like" type="button" class="btn btn-success" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
+            <button type="button" class="btn btn-success" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
             <button type="button" class="btn btn-light" data-url='#'>Не нравится</button>
         {% else %}
             <button type="button" class="btn btn-light" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
