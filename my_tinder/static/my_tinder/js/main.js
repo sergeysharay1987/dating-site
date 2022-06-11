@@ -1,13 +1,14 @@
 $(document).ready(function(){
     // Получаем значение csrf_token //
-    var csrf = $('input[name="csrfmiddlewaretoken]').val();
+    var csrf = $('input[name=csrfmiddlewaretoken]').val();
 
-    $('#is_like').click(function(){
-        $('#is_like').attr('class', 'btn btn-light'));
+        $('button:contains("Нравится")').click(function(){
+            $(this).attr('class', 'btn btn-primary')
+            alert('Событие click')
 
         $.ajax({
         // Получаем url из атрибута data-url тега button //
-            url: $('#is_like').attr('data-url'),
+            url: $('button:contains("btn btn")').attr('data-url'),
             type: 'post',
             data: {
             // Получаем email другого участника из атрибута id тега h1//
@@ -15,7 +16,7 @@ $(document).ready(function(){
                 csrfmiddlewaretoken: csrf
             },
             success: function(response) {
-                console.log($('#is_like').attr('class')));
+                console.log($('#is_like').attr('class'));
 
             }
         });
