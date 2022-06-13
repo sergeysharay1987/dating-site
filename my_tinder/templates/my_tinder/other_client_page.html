@@ -29,13 +29,13 @@
         {% get_liked_users auth_user other_client as liked_user %}
         {% if liked_user %}
         <h1> {{ liked_user }} </h1>
-        <!--Если интересующего нас email нету в бд, то отображаем кнопку не нажатой-->
+        <!--Если интересующего нас email другого участника нет в бд, то отображаем кнопку с атрибутом class="btn btn-light"-->
 
             <button type="button" class="btn btn-success" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
-            <button type="button" class="btn btn-light" data-url='#'>Не нравится</button>
+            <button type="button" class="btn btn-light" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Не нравится</button>
         {% else %}
             <button type="button" class="btn btn-light" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}'>Нравится</button>
-            <button type="button" class="btn btn-light" data-url='#'>Не нравится</button>
+            <button type="button" class="btn btn-light" data-url='{% url "other_client_detail" id=request.user.id other_client_id=other_client.id  %}>Не нравится</button>
         {% endif %}
 
     {% csrf_token %}
