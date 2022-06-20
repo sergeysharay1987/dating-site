@@ -1,15 +1,21 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views import View
+
 from dating_site.settings import BASE_DIR
 from django.db.models import QuerySet
 from .apps import MyTinderConfig
 from PIL import Image
 from my_tinder.models import CustomUser
-from .forms import CreateClientForm, ToLikeClientForm
+from .forms import CreateClientForm
 from .my_tinder_services.put_watermark import put_watermark
 
 app_name = MyTinderConfig.name  # название приложения
@@ -68,25 +74,34 @@ def client_page(request, id):
         return redirect('client_page', id=request.user.id)
 
 
-def login_client(request):
-    if request.method == 'GET':
-        bound_form = AuthenticationForm()
-        return render(request, 'my_tinder/login_page.html', {'form': bound_form})
-    if request.method == 'POST':
+@method_decorator(decorator=login_required, name='get')
+class ClientPageView(View):
 
-        username = request.POST['username']
-        password = request.POST['password']
-        data = {'username': username, 'password': password}
-        bound_form = AuthenticationForm(request, data)
-        if bound_form.is_valid():
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                # Перенаправление на страницу участника
-                return redirect('client_page', id=request.user.id)
+    def get(self, request, id):
+        model = CustomUser
+        client: CustomUser = CustomUser.objects.get(id=id)
+        if id == request.user.id:
+
+            client_info = {'avatar': client.avatar,
+                           'gender': client.gender,
+                           'first_name': client.first_name,
+                           'last_name': client.last_name}
+            context = {'client_info': client_info,
+                       'client_email': client.email,
+                       'client': client}
+            return render(request, 'my_tinder/client_page.html', context)
         else:
+            return redirect('client_page', id=request.user.id)
 
-            return render(request, 'my_tinder/login_page.html', {'form': bound_form})
+
+class LoginClient(LoginView):
+    template_name = 'my_tinder/login_page.html'
+    success_url = reverse_lazy('client_page', kwargs={'id': id})
+
+    def form_valid(self, form):
+        """Security check complete. Log the user in."""
+        login(self.request, form.get_user())
+        return HttpResponseRedirect(self.get_success_url())
 
 
 def logout_client(request):
@@ -112,7 +127,6 @@ def clients_page(request, id):
 # Вьюха для просмотра подробной информации о другом участнике
 @login_required()
 def other_client_page(request, id, other_client_id):
-
     auth_user: CustomUser = CustomUser.objects.get(id=id)
     other_client: CustomUser = CustomUser.objects.get(id=other_client_id)
     other_client_info = {'avatar': other_client.avatar,
@@ -128,7 +142,7 @@ def other_client_page(request, id, other_client_id):
                'auth_user': auth_user}
 
     if request.method == 'GET':
-        # Проверяем, что id передан.qный в urlе совпадает с request.user.id
+
         if id == request.user.id:
 
             return render(request, 'my_tinder/other_client_page.html', context)
@@ -138,18 +152,15 @@ def other_client_page(request, id, other_client_id):
         # Получаем email, переданный при помощи ajax запроса
         other_client_email = request.POST.get('other_client_email')
         try:
-            # Проверяем есть ли участник с таким email в таблице my_tinder_likedusers, то есть был ли участник
-            # лайкнут раньше
+
             auth_user.customuser_set.get(email=other_client_email)
 
         except ObjectDoesNotExist:
-            # Если участника с таким email нету в таблице my_tinder_likedusers, то заносим его в таблицу
-            # Создаём объект класса LikedUsers, значение email берём из объекта other_client, то есть из объекта,
-            # страницу которого мы просматриваем
+
             auth_user.customuser_set.add(other_client)
 
         else:
-            # Если участник с таким mail есть в таблице my_tinder_likedusers, то ничего не делаем
+
             pass
 
         return render(request, 'my_tinder/other_client_page.html', context)
