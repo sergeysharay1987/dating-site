@@ -23,7 +23,7 @@ urlpatterns = [
     path('clients/create/', registration, name='registration'),
     path('login/', LoginClient.as_view(), name='login'),
     path('logout/', logout_client, name='logout'),
-    path('clients/<int:id>/', ClientPageView.as_view, name='client_page'),
+    path('clients/<int:id>/', ClientPageView.as_view(), name='client_page'),
     path('clients/<int:id>/other_clients/', clients_page, name='watch_clients'),
     path('clients/<int:id>/other_clients/<int:other_client_id>', other_client_page,
          name='other_client_detail')
