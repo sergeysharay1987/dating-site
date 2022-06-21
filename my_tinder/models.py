@@ -1,5 +1,7 @@
+from enum import Enum
+
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import CharField, ImageField, EmailField, ForeignKey, TextField, CASCADE, BooleanField, Model
+from django.db.models import CharField, ImageField, EmailField, ForeignKey, CASCADE
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
@@ -37,18 +39,24 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+class Gender(Enum):
+
+    FEMALE = 'M'
+    MALE = 'F'
+
+
 class CustomUser(AbstractUser):
     username = None
-    email = EmailField(verbose_name='Электронная почта', unique=True)
+    email = EmailField(verbose_name='Email', unique=True)
 
-    MALE = 'M'
-    FEMALE = 'F'
+    MALE = 'Male'
+    FEMALE = 'Female'
 
-    GENDERS = ((MALE, 'Мужской'),
-               (FEMALE, 'Женский'))
+    GENDERS = ((MALE, 'Female'),
+               (FEMALE, 'Male'))
 
-    avatar = ImageField(verbose_name='Фото', upload_to='photos/%Y/%m/%d')
-    gender = CharField(verbose_name='Пол', max_length=1, choices=GENDERS)
+    avatar = ImageField(verbose_name='Photo', upload_to='photos/%Y/%m/%d')
+    gender = CharField(verbose_name='Gender', max_length=1, choices=[(gender, gender.value) for gender in Gender])
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -57,5 +65,5 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     class Meta:
-        verbose_name = 'Участник'
-        verbose_name_plural = 'Участники'
+        verbose_name = 'Client'
+        verbose_name_plural = 'Clients'
