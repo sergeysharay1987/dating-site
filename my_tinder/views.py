@@ -9,6 +9,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedF
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.generic import DetailView
 
 from dating_site.settings import BASE_DIR
 from django.db.models import QuerySet
@@ -75,10 +76,10 @@ def client_page(request, id):
 
 
 @method_decorator(decorator=login_required, name='get')
-class ClientPageView(View):
+class ClientPageView(DetailView):
 
     def get(self, request, id):
-        model = CustomUser
+        # model = CustomUser
         client: CustomUser = CustomUser.objects.get(id=id)
         if id == request.user.id:
 
@@ -96,12 +97,32 @@ class ClientPageView(View):
 
 class LoginClient(LoginView):
     template_name = 'my_tinder/login_page.html'
-    success_url = reverse_lazy('client_page', kwargs={'id': id})
 
-    def form_valid(self, form):
-        """Security check complete. Log the user in."""
-        login(self.request, form.get_user())
-        return HttpResponseRedirect(self.get_success_url())
+    # next_page = reverse_lazy('client_page')
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs['request'] = self.request
+    #     return kwargs
+
+    # def form_valid(self, form):
+    #     """Security check complete. Log the user in."""
+    #     login(self.request, form.get_user())
+    #     request = self.get_form_kwargs()['request']
+    #     print(f'request: {request.user}')
+    #     auth_user = request.user.id
+    #     #print(f'{reverse("client_page", {"id": auth_user})}')
+    #     #self.next_page = reverse_lazy('client_page', {'id': auth_user})
+    #     return redirect('client_page', {'id': auth_user})
+    # def form_valid(self, form):
+    #     """Security check complete. Log the user in."""
+    #     login(self.request, form.get_user())
+    #     self.next_page = reverse_lazy('client_page', {'id': self.request.user.id})
+    #     return HttpResponseRedirect(self.get_success_url())
+    def get_default_redirect_url(self):
+        auth_user = self.request.user.id
+        #     #print(f'{reverse("client_page", {"id": auth_user})}')
+        self.next_page = reverse_lazy('client_page', {'id': auth_user})
+        return self.next_page
 
 
 def logout_client(request):
