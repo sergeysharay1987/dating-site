@@ -28,9 +28,11 @@
           {% if request.user.is_authenticated %}
 
             <a class="nav-link" href='{% url "logout" %}'>Выйти</a>
-          {% else %}
+          {% elif not request.user.is_authenticated %}
             <a class="nav-link" href = '{% url "login" %}'>Войти</a>
           <a class="nav-link" href = '{% url "registration" %}'>Зарегистрироваться</a>
+          {% elif request.path ==  "http://127.0.0.1:8000/my_tinder/clients/create/" %}
+            <a class="nav-link" href = '{% url "login" %}'>Войти</a>//
           {% endif %}
 
 
