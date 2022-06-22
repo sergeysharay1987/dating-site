@@ -98,31 +98,9 @@ class ClientPageView(DetailView):
 class LoginClient(LoginView):
     template_name = 'my_tinder/login_page.html'
 
-    # next_page = reverse_lazy('client_page')
-    # def get_form_kwargs(self):
-    #     kwargs = super().get_form_kwargs()
-    #     kwargs['request'] = self.request
-    #     return kwargs
-
-    # def form_valid(self, form):
-    #     """Security check complete. Log the user in."""
-    #     login(self.request, form.get_user())
-    #     request = self.get_form_kwargs()['request']
-    #     print(f'request: {request.user}')
-    #     auth_user = request.user.id
-    #     #print(f'{reverse("client_page", {"id": auth_user})}')
-    #     #self.next_page = reverse_lazy('client_page', {'id': auth_user})
-    #     return redirect('client_page', {'id': auth_user})
-    # def form_valid(self, form):
-    #     """Security check complete. Log the user in."""
-    #     login(self.request, form.get_user())
-    #     self.next_page = reverse_lazy('client_page', {'id': self.request.user.id})
-    #     return HttpResponseRedirect(self.get_success_url())
-    def get_default_redirect_url(self):
+    def get_success_url(self):
         auth_user = self.request.user.id
-        #     #print(f'{reverse("client_page", {"id": auth_user})}')
-        self.next_page = reverse_lazy('client_page', {'id': auth_user})
-        return self.next_page
+        return reverse('client_page', args=[auth_user])
 
 
 def logout_client(request):
