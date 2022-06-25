@@ -1,7 +1,6 @@
 {% extends 'my_tinder/base_my_tinder.html' %}
 {% load verbose_names %}
 
-
 {% block title %}
 Страница участника
 {% endblock %}
@@ -11,16 +10,22 @@
 <h1>Вы вошли как {{ client_email }}</h1>
 
 
-    {% for field_name, value in client_info.items %}
-        {% if value.url %}
-        <p>{% get_verbose_field_name client field_name %}</p>
-        <img src="{{ value.url }}" alt="connect" style="max-height:300px">
+{% for field, value in client_info.items %}
+
+     {% if value.url %}
+        <p>{{ field }}</p>
+        <p><img src="{{ value.url }}" alt="connect" style="max-height:300px"></p>
         {% else %}
-            <p>{% get_verbose_field_name client field_name %}: {{ value }}</p>
+        <p> {{ field }}: {{ value }}</p>
         {% endif %}
 
 {% endfor %}
 
 {% endblock %}
+
+
+
+
+
 
 
