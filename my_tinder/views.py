@@ -58,41 +58,40 @@ def registration(request):
             return render(request, 'my_tinder/registration.html', {'form': bound_form})
 
 
-@login_required()
-def client_page(request, id):
-    client: CustomUser = CustomUser.objects.get(id=id)
-    if id == request.user.id:
-
-        client_info = {'avatar': client.avatar,
-                       'gender': client.gender,
-                       'first_name': client.first_name,
-                       'last_name': client.last_name}
-        context = {'client_info': client_info,
-                   'client_email': client.email,
-                   'client': client}
-        return render(request, 'my_tinder/client_page.html', context)
-    else:
-        return redirect('client_page', id=request.user.id)
+# @login_required()
+# def client_page(request, id):
+#     client: CustomUser = CustomUser.objects.get(id=id)
+#     if id == request.user.id:
+#
+#         client_info = {'avatar': client.avatar,
+#                        'gender': client.gender,
+#                        'first_name': client.first_name,
+#                        'last_name': client.last_name}
+#         context = {'client_info': client_info,
+#                    'client_email': client.email,
+#                    'client': client}
+#         return render(request, 'my_tinder/client_page.html', context)
+#     else:
+#         return redirect('client_page', id=request.user.id)
 
 
 @method_decorator(decorator=login_required, name='get')
 class ClientPageView(DetailView):
+    model = CustomUser
+    pk_url_kwarg = 'id'
+    template_name = 'my_tinder/client_page.html'
 
-    def get(self, request, id):
-        # model = CustomUser
-        client: CustomUser = CustomUser.objects.get(id=id)
-        if id == request.user.id:
-
-            client_info = {'avatar': client.avatar,
-                           'gender': client.gender,
-                           'first_name': client.first_name,
-                           'last_name': client.last_name}
-            context = {'client_info': client_info,
-                       'client_email': client.email,
-                       'client': client}
-            return render(request, 'my_tinder/client_page.html', context)
-        else:
-            return redirect('client_page', id=request.user.id)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(f'context: {type(context["object"])}')
+        client_info = {'avatar': context["object"].avatar,
+                       'gender': context["object"].gender,
+                       'first_name': context["object"].first_name,
+                       'last_name': context["object"].last_name}
+        client_email = context["object"].email
+        context['client_info'] = client_info
+        context['client_email'] = client_email
+        return context
 
 
 class LoginClient(LoginView):
