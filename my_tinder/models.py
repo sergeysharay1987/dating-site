@@ -1,7 +1,5 @@
-from enum import Enum
-
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import CharField, ImageField, EmailField, ForeignKey, CASCADE
+from django.db.models import CharField, ImageField, EmailField, ForeignKey, CASCADE, TextChoices
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
@@ -39,24 +37,18 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class Gender(Enum):
+class Gender(TextChoices):
 
-    FEMALE = 'M'
-    MALE = 'F'
+    FEMALE = 'F', _('Female')
+    MALE = 'M', _('Male')
 
 
 class CustomUser(AbstractUser):
     username = None
     email = EmailField(verbose_name='Email', unique=True)
 
-    MALE = 'Male'
-    FEMALE = 'Female'
-
-    GENDERS = ((MALE, 'Female'),
-               (FEMALE, 'Male'))
-
     avatar = ImageField(verbose_name='Photo', upload_to='photos/%Y/%m/%d')
-    gender = CharField(verbose_name='Gender', max_length=1, choices=[(gender, gender.value) for gender in Gender])
+    gender = CharField(verbose_name='Gender', max_length=1, choices=Gender.choices, default=Gender.MALE)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
