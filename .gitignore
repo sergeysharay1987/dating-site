@@ -4,5 +4,4 @@
 *.pyc
 db.sqlite3
 media/
-my_tinder/migrations/
 /work
