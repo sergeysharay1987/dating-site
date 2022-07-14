@@ -54,23 +54,27 @@ def test_registration():
                                                                    'email': 'Ivanov_1000@gmail.com',
                                                                    'password1': 'qwerty1000',
                                                                    'password2': 'qwerty1000'})
-        if resp.status_code != 200:
-            print(f'response: {resp.content}')
 
+        assert resp.status_code == 200
         assert get_user_model().objects.get(email='Ivanov_1000@gmail.com')
+
+
+@pytest.mark.django_db
+def test_registration_invalid_data():
+    client = Client()
+    with open(image_path, 'rb') as fp:
+        resp: HttpResponse = client.post(reverse('registration'), {'avatar': fp,
+                                                                   'gender': 'M',
+                                                                   'last_name': 0,
+                                                                   'email': 'Ivanov_10001gmail.com',
+                                                                   'password1': 'qwerty1000',
+                                                                   'password2': 'qwerty1000'})
+
+        assert resp.status_code == 200
+        assert not get_user_model().objects.filter(email='Ivanov_10001gmail.com').exists()
 
 
 img = BytesIO(file_data)
 img.name = 'image.png'
 
-'''@pytest.mark.django_db
-def test_registration():
-    client = Client()
-    resp: HttpResponse = client.post(reverse('registration'), {'avatar': img,
-                                                               'gender': 'M',
-                                                               'last_name': 'Ivanov',
-                                                               'email': 'Ivanov_1000@gmail.com',
-                                                               'password1': 'qwerty1000',
-                                                               'password2': 'qwerty1000'}
-                                     )
-    assert get_user_model().objects.get(email='Ivanov_1000@gmail.com')'''
+
