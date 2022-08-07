@@ -34,7 +34,7 @@ file_data_form = {'avatar': SimpleUploadedFile('image.png', file_data,
 
 @pytest.mark.django_db
 def test_user_creation_form():
-    print(image_path)
+
     bound_form = CreateClientForm(data, file_data_form)
     if bound_form.is_valid():
         bound_form.save()
@@ -74,7 +74,6 @@ def test_registration_invalid_data():
         assert not get_user_model().objects.filter(email='Ivanov_10001gmail.com').exists()
 
 
-img = BytesIO(file_data)
-img.name = 'image.png'
+
 
 
