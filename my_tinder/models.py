@@ -39,8 +39,8 @@ class CustomUserManager(BaseUserManager):
 
 class Gender(TextChoices):
 
-    FEMALE = 'F', _('Female')
-    MALE = 'M', _('Male')
+    MALE = _('Male'), 'M'
+    FEMALE = _('Female'), 'F'
 
 
 class CustomUser(AbstractUser):
@@ -48,7 +48,8 @@ class CustomUser(AbstractUser):
     email = EmailField(verbose_name='Email', unique=True)
 
     avatar = ImageField(verbose_name='Photo', upload_to='photos/%Y/%m/%d')
-    gender = CharField(verbose_name='Gender', max_length=1, choices=Gender.choices, default=Gender.MALE)
+    gender = CharField(verbose_name='Gender', max_length=len(Gender.FEMALE), choices=Gender.choices,
+                       default=Gender.MALE)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
