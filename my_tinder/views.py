@@ -61,6 +61,7 @@ class DetailClientApiView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
 
 
+
 class LoginClient(LoginView):
     template_name = 'my_tinder/login_page.html'
 
