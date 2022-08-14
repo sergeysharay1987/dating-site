@@ -66,7 +66,6 @@ class ClientPageView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(f'context: {type(context["object"])}')
         client_info = {'avatar': context['object'].avatar,
                        'gender': context['object'].gender,
                        'first_name': context['object'].first_name,
@@ -129,9 +128,7 @@ class ListClientsView(ListView):
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
-        print(f'request: {request.session["_auth_user_id"]}')
         context = self.get_context_data()
-        print(f'context: {context[""]}')
         if request.user.id != request.session["_auth_user_id"]:
             return redirect('watch_clients', id=request.user.id)
 
