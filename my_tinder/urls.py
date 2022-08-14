@@ -15,16 +15,16 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import index, registration, ClientPageView, LoginClient, logout_client, ListClientsView, other_client_page
+from .views import index, registration, LoginClient, logout_client, ListClientsApiView, other_client_page, DetailClientApiView
 
 
 urlpatterns = [
+    path('api/v1/clients_list', ListClientsApiView.as_view(), name='clients_list_api'),
+    path('api/v1/client_detail/<int:id>', DetailClientApiView.as_view(), name='client_detail_api'),
     path('index/', index, name='index'),
     path('clients/create/', registration, name='registration'),
     path('login/', LoginClient.as_view(), name='login'),
     path('logout/', logout_client, name='logout'),
-    path('clients/<int:id>/', ClientPageView.as_view(), name='client_page'),
-    path('clients/<int:id>/other_clients/', ListClientsView.as_view(), name='watch_clients'),
     path('clients/<int:id>/other_clients/<int:other_client_id>', other_client_page,
          name='other_client_detail')
 ]
