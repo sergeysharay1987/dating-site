@@ -1,7 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import CharField, ImageField, EmailField, ForeignKey, CASCADE, TextChoices
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
@@ -38,18 +37,16 @@ class CustomUserManager(BaseUserManager):
 
 
 class Gender(TextChoices):
-
-    MALE = _('Male'), 'M'
-    FEMALE = _('Female'), 'F'
+    MALE = 'M', 'Мужчина'
+    FEMALE = 'F', 'Женщина'
 
 
 class CustomUser(AbstractUser):
     username = None
-    email = EmailField(verbose_name='Email', unique=True)
+    email = EmailField(verbose_name='Электронная почта', unique=True)
 
-    avatar = ImageField(verbose_name='Photo', upload_to='photos/%Y/%m/%d')
-    gender = CharField(verbose_name='Gender', max_length=len(Gender.FEMALE), choices=Gender.choices,
-                       default=Gender.MALE)
+    avatar = ImageField(verbose_name='Фото', upload_to='photos/%Y/%m/%d', blank=True, null=True)
+    gender = CharField(verbose_name='Пол', max_length=1, choices=Gender.choices)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -58,5 +55,5 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     class Meta:
-        verbose_name = 'Client'
-        verbose_name_plural = 'Clients'
+        verbose_name = 'Участник'
+        verbose_name_plural = 'Участники'
