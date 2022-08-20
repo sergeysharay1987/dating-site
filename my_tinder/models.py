@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import CharField, ImageField, EmailField, ForeignKey, CASCADE, TextChoices
+from django.db.models import CharField, ImageField, EmailField, ManyToManyField, CASCADE, TextChoices
 from django.contrib.auth.models import AbstractUser
 
 
@@ -50,7 +50,7 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-    liked_users = ForeignKey('self', on_delete=CASCADE, blank=True, null=True)
+    liked_users = ManyToManyField('self', on_delete=CASCADE, blank=True, null=True)
 
     objects = CustomUserManager()
 
