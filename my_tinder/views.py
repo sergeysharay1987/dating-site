@@ -7,7 +7,7 @@ from django.contrib.auth import login, authenticate, logout
 from .serializers import CustomUserSerializer
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from django.urls import reverse
-from django.utils.decorators import method_decorator
+from rest_framework.permissions import IsAuthenticated
 
 from dating_site.settings import BASE_DIR
 from .apps import MyTinderConfig
@@ -20,40 +20,6 @@ app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
 path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изображения, содержащее водяной знак
 
-menu = [{'title': 'Зарегистрироваться', 'url_name': 'registration'},
-        {'title': 'Войти', 'url_name': 'login'}]
-
-
-def index(request):
-    context = {'menu': menu}
-    return render(request, 'my_tinder/index.html', context=context)
-
-
-def registration(request):
-    if request.method == 'GET':
-
-        form = CreateClientForm()
-        return render(request, 'my_tinder/registration.html', {'form': form})
-
-    elif request.method == 'POST':
-
-        bound_form = CreateClientForm(request.POST, request.FILES)
-        if bound_form.is_valid():
-
-            image_field: InMemoryUploadedFile = bound_form.cleaned_data['avatar']
-            image = Image.open(image_field, mode='r')
-            watermarked_image = put_watermark(image, path_to_watermark)
-            watermarked_image.seek(0)
-            file_data = {'avatar': SimpleUploadedFile(f'image.png', watermarked_image.read(),
-                                                      content_type=f'image/png')}
-            data = bound_form.cleaned_data
-            bound_form = CreateClientForm(data, file_data)
-            bound_form.save()
-            return render(request, 'my_tinder/registration.html', {'form': bound_form})
-        else:
-
-            return render(request, 'my_tinder/registration.html', {'form': bound_form})
-
 
 class DetailClientApiView(RetrieveAPIView):
     serializer_class = CustomUserSerializer
@@ -61,62 +27,7 @@ class DetailClientApiView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
 
 
-
-class LoginClient(LoginView):
-    template_name = 'my_tinder/login_page.html'
-
-    def get_success_url(self):
-        auth_user = self.request.user.id
-        return reverse('client_page', args=[auth_user])
-
-
-def logout_client(request):
-    logout(request)
-    return redirect('login')
-
-
 class ListClientsApiView(ListAPIView):
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
-
-
-# Вьюха для просмотра подробной информации о другом участнике
-@login_required()
-def other_client_page(request, id, other_client_id):
-    auth_user: CustomUser = CustomUser.objects.get(id=id)
-    other_client: CustomUser = CustomUser.objects.get(id=other_client_id)
-    other_client_info = {'avatar': other_client.avatar,
-                         'gender': other_client.gender,
-                         'first_name': other_client.first_name,
-                         'last_name': other_client.last_name}
-
-    context = {'id': id,
-               'other_client_id': other_client.pk,
-               'other_client_info': other_client_info,
-               'other_client_email': other_client.email,
-               'other_client': other_client,
-               'auth_user': auth_user}
-
-    if request.method == 'GET':
-
-        if id == request.user.id:
-
-            return render(request, 'my_tinder/other_client_page.html', context)
-        else:
-            return redirect('other_client_detail', id=request.user.id, other_client_id=other_client_id)
-    if request.method == 'POST':
-        # Получаем email, переданный при помощи ajax запроса
-        other_client_email = request.POST.get('other_client_email')
-        try:
-
-            auth_user.customuser_set.get(email=other_client_email)
-
-        except ObjectDoesNotExist:
-
-            auth_user.customuser_set.add(other_client)
-
-        else:
-
-            pass
-
-        return render(request, 'my_tinder/other_client_page.html', context)
+    permission_classes = (IsAuthenticated,)
