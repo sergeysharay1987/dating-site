@@ -28,9 +28,20 @@ class DetailClientApiView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = [TokenAuthentication, ]
 
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            print(f'**kwargs: {kwargs}')
+            return self.retrieve(request, *args, **kwargs)
+
 
 class ListClientsApiView(ListAPIView):
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated,)
     authentication_classes = [TokenAuthentication, ]
+
+    def get(self, request, *args, **kwargs):
+        print(f'here')
+        super().get(self, request, *args, **kwargs)
+        self.request.headers['Authorization'] = f'Token {request.user.auth_token}'
+        return self.list(request, *args, **kwargs)
