@@ -1,9 +1,5 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import login, authenticate, logout
 from .serializers import CustomUserSerializer
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from django.urls import reverse
@@ -15,6 +11,8 @@ from PIL import Image
 from my_tinder.models import CustomUser
 from .forms import CreateClientForm
 from .my_tinder_services.put_watermark import put_watermark
+from rest_framework.authtoken.models import Token
+
 
 app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
@@ -28,10 +26,13 @@ class DetailClientApiView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = [TokenAuthentication, ]
 
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
-            print(f'**kwargs: {kwargs}')
-            return self.retrieve(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+
+        if isinstance(request.user, CustomUser):
+            token = Token.objects.get(user=request.user).key
+            request.META['HTTP_AUTHORIZATION'] = f'Token {token}'
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ListClientsApiView(ListAPIView):
@@ -40,8 +41,10 @@ class ListClientsApiView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = [TokenAuthentication, ]
 
-    def get(self, request, *args, **kwargs):
-        print(f'here')
-        super().get(self, request, *args, **kwargs)
-        self.request.headers['Authorization'] = f'Token {request.user.auth_token}'
-        return self.list(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+
+        if isinstance(request.user, CustomUser):
+            token = Token.objects.get(user=request.user).key
+            request.META['HTTP_AUTHORIZATION'] = f'Token {token}'
+        return super().dispatch(request, *args, **kwargs)
+
