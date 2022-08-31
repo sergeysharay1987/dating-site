@@ -15,12 +15,13 @@ Including another URLconf
 """
 
 from django.urls import path, include
-from .views import ListClientsApiView, DetailClientApiView
-
+from .views import ListClientsAPIView, DetailClientAPIView, DestroyClientAPIView
 
 urlpatterns = [
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('api/v1/clients_list', ListClientsApiView.as_view(), name='clients_list_api'),
-    path('api/v1/client_detail/<int:id>', DetailClientApiView.as_view(), name='client_detail_api'),
+    path('api/v1/clients_list', ListClientsAPIView.as_view(), name='rest_clients_list'),
+    path('api/v1/client_detail/<int:id>', DetailClientAPIView.as_view(), name='rest_client_detail'),
+    path('api/v1/client_update/<int:id>', DetailClientAPIView.as_view(), name='rest_client_update'),
+    path('api/v1/client_delete/<int:id>', DestroyClientAPIView.as_view(), name='rest_client_update')
 ]
