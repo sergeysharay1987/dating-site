@@ -1,5 +1,8 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, GenericAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, GenericAPIView, UpdateAPIView, \
+    DestroyAPIView
 from django.shortcuts import render, get_object_or_404, redirect
+from rest_framework.response import Response
+
 from .serializers import CustomUserSerializer
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from django.urls import reverse
@@ -21,7 +24,6 @@ path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изо
 class APIViewMixin(GenericAPIView):
 
     def dispatch(self, request, *args, **kwargs):
-
         token = Token.objects.get(user=request.user).key
         request.META['HTTP_AUTHORIZATION'] = f'Token {token}'
         return super().dispatch(request, *args, **kwargs)
@@ -29,12 +31,10 @@ class APIViewMixin(GenericAPIView):
 
 class ListClientsAPIView(APIViewMixin, ListAPIView):
     serializer_class = CustomUserSerializer
-
     permission_classes = (IsAuthenticated,)
     authentication_classes = [TokenAuthentication, ]
 
     def get_queryset(self):
-
         queryset = CustomUser.objects.all()
         return queryset.exclude(id=self.request.user.id)
 
@@ -47,7 +47,7 @@ class DetailClientAPIView(APIViewMixin, RetrieveAPIView):
     authentication_classes = [TokenAuthentication, ]
 
 
-class UpdateClientAPIView(APIViewMixin, UpdateAPIView):
+class UpdateClientAPIView(UpdateAPIView):
     serializer_class = CustomUserSerializer
     lookup_field = 'id'
     queryset = CustomUser.objects.all()
@@ -55,8 +55,17 @@ class UpdateClientAPIView(APIViewMixin, UpdateAPIView):
     authentication_classes = [TokenAuthentication, ]
 
 
-class DestroyClientAPIView(DestroyAPIView):
+    def dispatch(self, request, *args, **kwargs):
+        token = Token.objects.get(user=request.user).key
+        request.META['HTTP_AUTHORIZATION'] = f'Token {token}'
+        if request.user.id != kwargs['id']:
+            kwargs['id'] = request.user.id
+            #request.path = reverse('rest_client_update,', kwargs={'id': request.user.id})
+            request.path = f'http://127.0.0.1:8000/my_tinder/api/v1/client_update/{request.user.id}'
+        return super().dispatch(request, *args, **kwargs)
 
+
+class DestroyClientAPIView(DestroyAPIView):
     serializer_class = CustomUserSerializer
     lookup_field = 'id'
     queryset = CustomUser.objects.all()
