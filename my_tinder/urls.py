@@ -15,13 +15,14 @@ Including another URLconf
 """
 
 from django.urls import path, include
-from .views import ListClientsAPIView, DetailClientAPIView, DestroyClientAPIView, UpdateClientAPIView
+from my_tinder import views
+from .routers import CustomRouter
+
+router = CustomRouter()
+router.register(r'clients', views.ClientViewSet)
 
 urlpatterns = [
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('api/v1/clients_list', ListClientsAPIView.as_view(), name='rest_clients_list'),
-    path('api/v1/client_detail/<int:id>', DetailClientAPIView.as_view(), name='rest_client_detail'),
-    path('api/v1/client_update/<int:id>', UpdateClientAPIView.as_view(), name='rest_client_update'),
-    path('api/v1/client_delete/<int:id>', DestroyClientAPIView.as_view(), name='rest_client_delete')
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),  # возможно будет не нужен этот url
+    path('', include(router.urls)),
 ]
