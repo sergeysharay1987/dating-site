@@ -1,5 +1,6 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, GenericAPIView, UpdateAPIView, \
     DestroyAPIView
+from rest_framework import viewsets
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework.response import Response
 
@@ -12,62 +13,16 @@ from dating_site.settings import BASE_DIR
 from .apps import MyTinderConfig
 from PIL import Image
 from my_tinder.models import CustomUser
-from .forms import CreateClientForm
+from rest_framework.decorators import api_view, permission_classes
 from .my_tinder_services.put_watermark import put_watermark
-from rest_framework.authtoken.models import Token
 
 app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
 path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изображения, содержащее водяной знак
 
 
-class APIViewMixin(GenericAPIView):
-
-    def dispatch(self, request, *args, **kwargs):
-        token = Token.objects.get(user=request.user).key
-        request.META['HTTP_AUTHORIZATION'] = f'Token {token}'
-        return super().dispatch(request, *args, **kwargs)
-
-
-class ListClientsAPIView(APIViewMixin, ListAPIView):
-    serializer_class = CustomUserSerializer
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = [TokenAuthentication, ]
-
-    def get_queryset(self):
-        queryset = CustomUser.objects.all()
-        return queryset.exclude(id=self.request.user.id)
-
-
-class DetailClientAPIView(APIViewMixin, RetrieveAPIView):
-    serializer_class = CustomUserSerializer
-    lookup_field = 'id'
+class ClientViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = [TokenAuthentication, ]
-
-
-class UpdateClientAPIView(UpdateAPIView):
     serializer_class = CustomUserSerializer
-    lookup_field = 'id'
-    queryset = CustomUser.objects.all()
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = [TokenAuthentication, ]
 
 
-    def dispatch(self, request, *args, **kwargs):
-        token = Token.objects.get(user=request.user).key
-        request.META['HTTP_AUTHORIZATION'] = f'Token {token}'
-        if request.user.id != kwargs['id']:
-            kwargs['id'] = request.user.id
-            #request.path = reverse('rest_client_update,', kwargs={'id': request.user.id})
-            request.path = f'http://127.0.0.1:8000/my_tinder/api/v1/client_update/{request.user.id}'
-        return super().dispatch(request, *args, **kwargs)
-
-
-class DestroyClientAPIView(DestroyAPIView):
-    serializer_class = CustomUserSerializer
-    lookup_field = 'id'
-    queryset = CustomUser.objects.all()
-    permission_classes = (IsAdminUser,)
-    authentication_classes = [TokenAuthentication, ]
