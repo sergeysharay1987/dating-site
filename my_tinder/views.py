@@ -3,11 +3,11 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView,
 from rest_framework import viewsets
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework.response import Response
-
+from rest_framework.decorators import permission_classes
 from .serializers import CustomUserSerializer
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from django.urls import reverse
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, BasePermission
 from rest_framework.authentication import TokenAuthentication
 from dating_site.settings import BASE_DIR
 from .apps import MyTinderConfig
@@ -21,8 +21,21 @@ watermark = 'watermark.png'  # название изображение, соде
 path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изображения, содержащее водяной знак
 
 
+class IsRequestUser(BasePermission):
+
+    def has_permission(self, request, view):
+        if request.user.id == request.data.get('pk'):
+            return True
+        return False
+
+
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    #permission_classes = [IsAuthenticated,]
+    authentication_classes = [TokenAuthentication, ]
 
+    @permission_classes([IsRequestUser, ])
+    def update(self, request, *args, **kwargs):
+        return super().update(self, request, *args, **kwargs)
 

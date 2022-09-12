@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import CharField, ImageField, EmailField, ManyToManyField, TextChoices
 from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
@@ -43,7 +44,9 @@ class Gender(TextChoices):
 
 class CustomUser(AbstractUser):
     username = None
-    email = EmailField(verbose_name='Электронная почта', unique=True, error_messages={'unique': 'Участник с такой электронной почтой уже существует.'})
+    email = EmailField(verbose_name='Электронная почта', unique=True, error_messages={'unique': 'Участник с такой '
+                                                                                                'электронной почтой '
+                                                                                                'уже существует.'})
 
     avatar = ImageField(verbose_name='Фото', upload_to='photos/%Y/%m/%d', blank=True, null=True)
     gender = CharField(verbose_name='Пол', max_length=1, choices=Gender.choices)
