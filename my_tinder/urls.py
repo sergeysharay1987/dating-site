@@ -17,6 +17,8 @@ Including another URLconf
 from django.urls import path, include
 from my_tinder import views
 from .routers import CustomRouter
+from django.conf.urls.static import static
+from django.conf import settings
 
 router = CustomRouter()
 router.register(r'clients', views.ClientViewSet)
@@ -26,3 +28,5 @@ urlpatterns = [
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),  # возможно будет не нужен этот url
     path('', include(router.urls)),
 ]
+if settings.DEBUG:
+    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
