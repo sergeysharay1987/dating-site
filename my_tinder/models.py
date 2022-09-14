@@ -38,11 +38,13 @@ class CustomUserManager(BaseUserManager):
 
 
 class Gender(TextChoices):
-    MALE = 'M', 'Мужчина'
-    FEMALE = 'F', 'Женщина'
+
+    MALE = 'М', 'Мужчина'
+    FEMALE = 'Ж', 'Женщина'
 
 
 class CustomUser(AbstractUser):
+
     username = None
     email = EmailField(verbose_name='Электронная почта', unique=True, error_messages={'unique': 'Участник с такой '
                                                                                                 'электронной почтой '
@@ -53,10 +55,11 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-    liked_users = ManyToManyField('self', blank=True)
-
+    liked_users = ManyToManyField('self', blank=True, symmetrical=False, related_name='liked_users_set')
+    unliked_users = ManyToManyField('self', blank=True, symmetrical=False, related_name='unliked_users_set')
     objects = CustomUserManager()
 
     class Meta:
+
         verbose_name = 'Участник'
         verbose_name_plural = 'Участники'
