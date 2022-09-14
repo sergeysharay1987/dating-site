@@ -15,27 +15,16 @@ from PIL import Image
 from my_tinder.models import CustomUser
 from rest_framework.decorators import api_view, permission_classes
 from .my_tinder_services.put_watermark import put_watermark
+from my_tinder.permissions import IsUserPkInUrl
 
 app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
 path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изображения, содержащее водяной знак
 
 
-class IsRequestUser(BasePermission):
-
-    def has_permission(self, request, view):
-        if request.user.id == request.data.get('pk'):
-            return True
-        return False
-
-
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    #permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, IsUserPkInUrl]
     authentication_classes = [TokenAuthentication, ]
-
-    @permission_classes([IsRequestUser, ])
-    def update(self, request, *args, **kwargs):
-        return super().update(self, request, *args, **kwargs)
 
