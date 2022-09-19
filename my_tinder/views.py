@@ -1,6 +1,6 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, GenericAPIView, UpdateAPIView, \
     DestroyAPIView
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes
@@ -13,6 +13,7 @@ from dating_site.settings import BASE_DIR
 from .apps import MyTinderConfig
 from PIL import Image
 from my_tinder.models import CustomUser
+from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.decorators import api_view, permission_classes
 from .my_tinder_services.put_watermark import put_watermark
 from my_tinder.permissions import IsUserPkInUrl
@@ -25,6 +26,21 @@ path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изо
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [IsAuthenticated, IsUserPkInUrl]
+    #permission_classes = [IsAuthenticated, IsUserPkInUrl]
     authentication_classes = [TokenAuthentication, ]
+    #parses_classes = [MultiPartParser, FileUploadParser,]
+
+    def create(self, request, *args, **kwargs):
+        if request.data['avatar']:
+            base_image = Image.open(request.data["avatar"])
+            request.data["avatar"] = put_watermark(base_image, path_to_watermark)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        print(f'request.data: {type(request.data["avatar"])}')
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
