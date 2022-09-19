@@ -1,22 +1,22 @@
-from rest_framework.routers import Route, DynamicRoute, SimpleRouter
+from rest_framework.routers import Route, DynamicRoute, SimpleRouter, DefaultRouter
 
 
-class CustomRouter(SimpleRouter):
+class CustomRouter(DefaultRouter):
     """
     A router for read-only APIs, which doesn't use trailing slashes.
     """
     routes = [
         Route(
-            url=r'^{prefix}/create{trailing_slash}$',
-            mapping={'post': 'create'},
-            name='{basename}-create',
+            url=r'^{prefix}/$',
+            mapping={'get': 'list'},
+            name='{basename}-list',
             detail=False,
             initkwargs={'suffix': 'List'}
         ),
         Route(
-            url=r'^{prefix}/$',
-            mapping={'get': 'list'},
-            name='{basename}-list',
+            url=r'^{prefix}/create{trailing_slash}$',
+            mapping={'post': 'create'},
+            name='{basename}-create',
             detail=False,
             initkwargs={'suffix': 'List'}
         ),
