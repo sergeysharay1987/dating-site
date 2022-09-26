@@ -15,5 +15,4 @@ def put_watermark(base_image: Image, watermark_path: str) -> BytesIO:
     byte_io = BytesIO()
     byte_io.seek(0)
     base_image.save(byte_io, 'PNG')
-    base_image.show()
     return byte_io
