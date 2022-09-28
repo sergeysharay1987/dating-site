@@ -1,4 +1,3 @@
-
 from io import BytesIO
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, GenericAPIView, UpdateAPIView, \
     DestroyAPIView
@@ -33,11 +32,15 @@ class ClientViewSet(viewsets.ModelViewSet):
 
     parses_classes = [MultiPartParser, FileUploadParser, ]
 
-    def create(self, request, *args, **kwargs):
+    def perform_create(self, serializer):
 
-        serializer = self.get_serializer(data=request.data)
+        base_image = serializer.validated_data["avatar"].file
+        base_image = Image.open(base_image).convert('RGBA')
+        watermark = Image.open(path_to_watermark)
 
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        base_image.alpha_composite(watermark)
+        bytes = BytesIO()
+        base_image.save(bytes, 'PNG')
+        serializer.validated_data["avatar"].file = bytes
+        serializer.save()
+
