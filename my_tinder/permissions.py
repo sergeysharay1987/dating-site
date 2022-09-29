@@ -7,3 +7,11 @@ class IsUserPkInUrl(BasePermission):
         if request.user.id == obj.id and view.action == 'update':
             return True
         return False
+
+
+class AllowAnyCreate(BasePermission):
+
+    def has_permission(self, request, view):
+        if view.action == 'create':
+            return True
+        return False

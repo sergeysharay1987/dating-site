@@ -16,31 +16,31 @@ from PIL import Image
 from my_tinder.models import CustomUser
 from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.decorators import api_view, permission_classes
-from .my_tinder_services.put_watermark import put_watermark
-from my_tinder.permissions import IsUserPkInUrl
+from .my_tinder_services.put_watermark import put_watermark, change_file
+from my_tinder.permissions import IsUserPkInUrl, AllowAnyCreate
 
 app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
 path_to_watermark = f'{BASE_DIR}/{app_name}/{watermark}'  # путь до изображения, содержащее водяной знак
+from rest_framework.decorators import permission_classes
 
 
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    # permission_classes = [IsAuthenticated, IsUserPkInUrl]
+    permission_classes = [AllowAnyCreate, IsAuthenticated, IsUserPkInUrl, ]
     authentication_classes = [TokenAuthentication, ]
-
     parses_classes = [MultiPartParser, FileUploadParser, ]
 
     def perform_create(self, serializer):
 
-        base_image = serializer.validated_data["avatar"].file
-        base_image = Image.open(base_image).convert('RGBA')
-        watermark = Image.open(path_to_watermark)
+        if serializer.validated_data.get("avatar"):
+            serializer.validated_data['avatar'].file = change_file(serializer.validated_data['avatar'])
+        serializer.save()
 
-        base_image.alpha_composite(watermark)
-        bytes = BytesIO()
-        base_image.save(bytes, 'PNG')
-        serializer.validated_data["avatar"].file = bytes
+    def perform_update(self, serializer):
+        print(f'self.get_permissions: {self.get_permissions()}')
+        if serializer.validated_data.get('avatar'):
+            serializer.validated_data['avatar'].file = change_file(serializer.validated_data['avatar'])
         serializer.save()
 
