@@ -36,8 +36,8 @@ class CustomRouter(DefaultRouter):
         ),
         Route(
             url=r'^{prefix}/{lookup}/delete{trailing_slash}$',
-            mapping={'delete': 'delete'},
-            name='{basename}-detail',
+            mapping={'delete': 'destroy'},
+            name='{basename}-delete',
             detail=True,
             initkwargs={'suffix': 'Delete'}
         ),
