@@ -8,7 +8,7 @@ from rest_framework.decorators import permission_classes
 from .serializers import CustomUserSerializer
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from django.urls import reverse
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, BasePermission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, BasePermission, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
 from dating_site.settings import BASE_DIR
 from .apps import MyTinderConfig
@@ -28,7 +28,7 @@ from rest_framework.decorators import permission_classes
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [AllowAnyCreate, IsAuthenticated, IsUserPkInUrl, ]
+    permission_classes = [IsUserPkInUrl, IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication, ]
     parses_classes = [MultiPartParser, FileUploadParser, ]
 
