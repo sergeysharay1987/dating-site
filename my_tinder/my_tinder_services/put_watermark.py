@@ -1,10 +1,6 @@
-import os
-
 from PIL.Image import Image
 from PIL import Image
 from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-
 from my_tinder.apps import MyTinderConfig
 from dating_site.settings import BASE_DIR
 
@@ -25,10 +21,3 @@ def put_watermark(base_image: Image, watermark_path: str = path_to_watermark) ->
     base_image.save(byte_io, 'PNG')
     return byte_io
 
-
-def change_file(avatar: InMemoryUploadedFile):
-
-    base_image = Image.open(avatar.file)
-    if base_image.mode != 'RGBA':
-        base_image.convert('RGBA')
-    return put_watermark(base_image)
