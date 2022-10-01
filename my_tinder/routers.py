@@ -7,7 +7,7 @@ class CustomRouter(DefaultRouter):
     """
     routes = [
         Route(
-            url=r'^{prefix}/$',
+            url=r'^list/$',
             mapping={'get': 'list'},
             name='{basename}-list',
             detail=False,
