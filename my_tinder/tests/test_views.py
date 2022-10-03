@@ -1,25 +1,17 @@
 from io import BytesIO
 from dating_site.settings import BASE_DIR
+from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import HttpResponse
+from django.test import Client
+import pytest
 from django.urls import reverse
 from PIL import Image
 from my_tinder.apps import MyTinderConfig
-from rest_framework.test import APIClient
-from my_tinder.models import CustomUser
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND
-import pytest
-from django.core.management import call_command
-from my_tinder.urls import router
-
-
-@pytest.fixture(scope='session')
-def django_db_setup(django_db_blocker):
-    with django_db_blocker.unblock():
-        call_command('loaddata', 'data_for_testing.json')
-
+from my_tinder.forms import CreateClientForm
 
 data = {
-    'gender': 'М',
+    'gender': 'M',
     'last_name': 'Ivanov',
     'email': 'Ivanov_1000@gmil.com',
     'password1': 'qwerty1000',
@@ -40,44 +32,48 @@ file_data_form = {'avatar': SimpleUploadedFile('image.png', file_data,
                                                content_type=f'image/png')}
 
 
-@pytest.fixture(params=[[1, 2, 3]])  # /calculator/
 @pytest.mark.django_db
-def get_user(request):
-    print(f'request.param: {request.param}')
-    # for user in request.param:
-    #     yield user
-    return CustomUser.objects.get(request.param)
-    # return request.param
+def test_user_creation_form():
 
-
-@pytest.mark.django_db
-def test_print_user(get_user):
-    print(f'get_user: {get_user}')
-    return get_user
-
-
-@pytest.mark.django_db
-def test_list():
-    api_client = APIClient()
-    api_client.force_authenticate(CustomUser.objects.get(id=7))
-    api_response = api_client.get(path=reverse(router.urls[0].name), format='json')
-    api_response.render()
-    assert api_response.status_code == HTTP_200_OK
-
-
-@pytest.mark.django_db
-def test_create():
-    api_client = APIClient()
-    api_response = api_client.post(path=reverse(router.urls[2].name), data=data, format='json')
-    assert api_response.status_code == HTTP_201_CREATED
-
-
-@pytest.mark.django_db
-def test_retrieve(get_user):
-    api_client = APIClient()
-    api_client.force_authenticate(CustomUser.objects.get(id=7))
-    api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': get_user.pk}), format='json')
-    if CustomUser.objects.contains(get_user):
-        assert api_response.status_code == HTTP_200_OK
+    bound_form = CreateClientForm(data, file_data_form)
+    if bound_form.is_valid():
+        bound_form.save()
+        users = get_user_model().objects.all()
+        assert users.count() == 1
     else:
-        assert api_response.status_code == HTTP_404_NOT_FOUND
+        return bound_form.errors
+
+
+@pytest.mark.django_db
+def test_registration():
+    client = Client()
+    with open(image_path, 'rb') as fp:
+        resp: HttpResponse = client.post(reverse('registration'), {'avatar': fp,
+                                                                   'gender': 'M',
+                                                                   'last_name': 'Ivanov',
+                                                                   'email': 'Ivanov_1000@gmail.com',
+                                                                   'password1': 'qwerty1000',
+                                                                   'password2': 'qwerty1000'})
+
+        assert resp.status_code == 200
+        assert get_user_model().objects.get(email='Ivanov_1000@gmail.com')
+
+
+@pytest.mark.django_db
+def test_registration_invalid_data():
+    client = Client()
+    with open(image_path, 'rb') as fp:
+        resp: HttpResponse = client.post(reverse('registration'), {'avatar': fp,
+                                                                   'gender': 'M',
+                                                                   'last_name': 0,
+                                                                   'email': 'Ivanov_10001gmail.com',
+                                                                   'password1': 'qwerty1000',
+                                                                   'password2': 'qwerty1000'})
+
+        assert resp.status_code == 200
+        assert not get_user_model().objects.filter(email='Ivanov_10001gmail.com').exists()
+
+
+
+
+
