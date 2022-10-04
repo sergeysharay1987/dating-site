@@ -1,6 +1,6 @@
 from io import BytesIO
 from dating_site.settings import BASE_DIR
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.uploadedfile import SimpleUploadedFile, InMemoryUploadedFile
 from django.urls import reverse
 from PIL import Image
 from my_tinder.apps import MyTinderConfig
@@ -18,42 +18,53 @@ def django_db_setup(django_db_blocker):
         call_command('loaddata', 'data_for_testing.json')
 
 
-data = {
-    'gender': 'М',
-    'last_name': 'Ivanov',
-    'email': 'Ivanov_1000@gmil.com',
-    'password1': 'qwerty1000',
-    'password2': 'qwerty1000'}
+file_name = 'image.png'
+image_path = f'/{BASE_DIR}/{MyTinderConfig.name}/tests/{file_name}'
 
-image_path = f'/{BASE_DIR}/{MyTinderConfig.name}/tests/image.png'
 
+# def get_file_data(path: str):
+#     image = Image.open(path)
+#     bytes_io = BytesIO()
+#     image.save(bytes_io, 'png')
+#     return bytes_io.getvalue()
 
 def get_file_data(path: str):
     image = Image.open(path)
     bytes_io = BytesIO()
-    image.save(bytes_io, 'png')
-    return bytes_io.getvalue()
+    image.save(bytes_io, 'PNG')
+    bytes_io.read()
+    content = bytes_io.getvalue()
+    return content
 
 
+size = Image.open(image_path).size
 file_data = get_file_data(image_path)
 file_data_form = {'avatar': SimpleUploadedFile('image.png', file_data,
-                                               content_type=f'image/png')}
+                                               content_type=f'image/{file_name.split(".")[-1]}')}
+
+# data = {'avatar': InMemoryUploadedFile(name='image.png', size=size, charset=None,
+#                                        content_type=f'image/{file_name.split(".")[-1]}', field_name='avatar',
+#                                        file=file_data),
+#         'gender': 'М',
+#         'last_name': 'Ivanov',
+#         'email': 'Ivanov_1000@gmil.com',
+#         'password1': 'qwerty1000',
+#         'password2': 'qwerty1000'}
+
+data = {
+    'gender': 'М',
+    'last_name': 'Ivanov',
+    'email': 'Ivanov_1000@gmail.com',
+    'password1': 'qwerty1000',
+    'password2': 'qwerty1000'}
+
+queryset = CustomUser.objects.all()[:10]
 
 
-@pytest.fixture(params=[[1, 2, 3]])  # /calculator/
-@pytest.mark.django_db
-def get_user(request):
-    print(f'request.param: {request.param}')
-    # for user in request.param:
-    #     yield user
-    return CustomUser.objects.get(request.param)
-    # return request.param
-
-
-@pytest.mark.django_db
-def test_print_user(get_user):
-    print(f'get_user: {get_user}')
-    return get_user
+@pytest.fixture(params=[queryset])
+def user(request):
+    for user in request.param:
+        return user
 
 
 @pytest.mark.django_db
@@ -73,11 +84,11 @@ def test_create():
 
 
 @pytest.mark.django_db
-def test_retrieve(get_user):
+def test_retrieve(user):
     api_client = APIClient()
     api_client.force_authenticate(CustomUser.objects.get(id=7))
-    api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': get_user.pk}), format='json')
-    if CustomUser.objects.contains(get_user):
+    api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': user.pk}), format='json')
+    if CustomUser.objects.contains(user):
         assert api_response.status_code == HTTP_200_OK
     else:
         assert api_response.status_code == HTTP_404_NOT_FOUND
