@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from .serializers import CustomUserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
@@ -12,6 +14,11 @@ class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserSerializer
     authentication_classes = [TokenAuthentication, ]
     parses_classes = [MultiPartParser, FileUploadParser, ]
+
+    @action(methods=['get'], detail=True, permission_classes=[IsAuthenticated], url_name='match')
+    def check_match(self, request, pk=None):
+        client = CustomUser.objects.get(pk=pk)
+        return Response({'client': client})
 
     def get_permissions(self):
 

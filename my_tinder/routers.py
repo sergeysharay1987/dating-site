@@ -14,31 +14,31 @@ class CustomRouter(DefaultRouter):
             initkwargs={'suffix': 'List'}
         ),
         Route(
-            url=r'^{prefix}/create{trailing_slash}$',
+            url=r'^{prefix}/create$',
             mapping={'post': 'create'},
             name='{basename}-create',
             detail=False,
             initkwargs={'suffix': 'List'}
         ),
         Route(
-            url=r'^{prefix}/{lookup}{trailing_slash}$',
+            url=r'^{prefix}/{lookup}$',
             mapping={'get': 'retrieve'},
             name='{basename}-detail',
             detail=True,
             initkwargs={'suffix': 'Detail'}
         ),
         Route(
-            url=r'^{prefix}/{lookup}/update{trailing_slash}$',
+            url=r'^{prefix}/{lookup}/update$',
             mapping={'put': 'update'},
             name='{basename}-update',
             detail=True,
             initkwargs={'suffix': 'Update'}
         ),
         Route(
-            url=r'^{prefix}/{lookup}/delete{trailing_slash}$',
+            url=r'^{prefix}/{lookup}/delete$',
             mapping={'delete': 'destroy'},
             name='{basename}-delete',
             detail=True,
             initkwargs={'suffix': 'Delete'}
-        ),
+        )
     ]
