@@ -40,5 +40,12 @@ class CustomRouter(DefaultRouter):
             name='{basename}-delete',
             detail=True,
             initkwargs={'suffix': 'Delete'}
+        ),
+        Route(
+            url=r'^{prefix}/{lookup}/match$',
+            mapping={'post' or 'put': 'add_liked_user'},
+            name='{basename}-add_liked_user',
+            detail=True,
+            initkwargs={}
         )
     ]

@@ -1,6 +1,11 @@
+from smtplib import SMTP
+
+from django.core.mail import send_mail
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from dating_site.settings import EMAIL_HOST_USER
 from .serializers import CustomUserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
@@ -15,14 +20,9 @@ class ClientViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication, ]
     parses_classes = [MultiPartParser, FileUploadParser, ]
 
-    @action(methods=['get'], detail=True, permission_classes=[IsAuthenticated], url_name='match')
-    def check_match(self, request, pk=None):
-        client = CustomUser.objects.get(pk=pk)
-        return Response({'client': client})
-
     def get_permissions(self):
 
-        if self.action in ['retrieve', 'list']:
+        if self.action in ['retrieve', 'list', 'add_liked_user']:
             self.permission_classes = [IsAuthenticated]
 
         if self.action == 'create':
@@ -30,3 +30,19 @@ class ClientViewSet(viewsets.ModelViewSet):
         elif self.action in ['update', 'destroy']:
             self.permission_classes = [IsAuthenticated, IsUserPkInUrl]
         return super().get_permissions()
+
+    def add_liked_user(self, request, pk=None):
+
+        auth_user: CustomUser = request.user
+        user = CustomUser.objects.get(pk=pk)
+        if auth_user.liked_users.contains(user) and auth_user != user:
+
+            return Response({'Симпатия': f'Вам нравится пользователь {user.email}'})
+        else:
+
+            send_mail(subject='Симпатия',
+                      message='Вы понраивлись {auth_user.email}! Почта участника: {user.email}',
+                      from_email=EMAIL_HOST_USER,
+                      recipient_list=[user.email, ], auth_user=EMAIL_HOST_USER)
+            auth_user.liked_users.add(user)
+            return Response({'Успех': f'Вы поставили симпатию пользователю {user.email}'})
