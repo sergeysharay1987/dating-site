@@ -3,6 +3,8 @@ from PIL import Image
 from io import BytesIO
 from my_tinder.apps import MyTinderConfig
 from dating_site.settings import BASE_DIR
+from django_filters import rest_framework as filters
+from my_tinder.models import CustomUser
 
 app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
@@ -21,3 +23,14 @@ def put_watermark(base_image: Image, watermark_path: str = path_to_watermark) ->
     base_image.save(byte_io, 'PNG')
     return byte_io
 
+
+class UserFilter(filters.FilterSet):
+    class Meta:
+        model = CustomUser
+        fields = {
+            'id': ['exact'],
+            'gender': ['exact'],
+            'first_name': ['icontains', 'lt', 'gt'],
+            'last_name': ['icontains', 'lt', 'gt']}
+
+        #fields = ['gender','first_name', 'last_name']
