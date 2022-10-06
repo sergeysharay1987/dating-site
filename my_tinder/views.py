@@ -1,6 +1,3 @@
-from smtplib import SMTP
-
-import django_filters
 from django.core.mail import send_mail
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -13,6 +10,7 @@ from my_tinder.models import CustomUser
 from rest_framework.parsers import MultiPartParser, FileUploadParser
 from my_tinder.permissions import IsUserPkInUrl
 from django_filters import rest_framework as filters
+
 
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -27,7 +25,6 @@ class ClientViewSet(viewsets.ModelViewSet):
 
         if self.action in ['retrieve', 'list', 'add_liked_user']:
             self.permission_classes = [IsAuthenticated]
-
 
         if self.action == 'create':
             self.permission_classes = [AllowAny, ]
