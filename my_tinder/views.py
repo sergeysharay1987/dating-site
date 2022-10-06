@@ -1,10 +1,7 @@
-from smtplib import SMTP
-
 from django.core.mail import send_mail
 from rest_framework import viewsets
-from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from my_tinder.my_tinder_services.put_watermark import UserFilter
 from dating_site.settings import EMAIL_HOST_USER
 from .serializers import CustomUserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
@@ -12,6 +9,7 @@ from rest_framework.authentication import TokenAuthentication
 from my_tinder.models import CustomUser
 from rest_framework.parsers import MultiPartParser, FileUploadParser
 from my_tinder.permissions import IsUserPkInUrl
+from django_filters import rest_framework as filters
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -19,6 +17,9 @@ class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserSerializer
     authentication_classes = [TokenAuthentication, ]
     parses_classes = [MultiPartParser, FileUploadParser, ]
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_fields = ['gender', 'first_name', 'last_name']
+    #filter = [UserFilter,]
 
     def get_permissions(self):
 
@@ -41,8 +42,8 @@ class ClientViewSet(viewsets.ModelViewSet):
         else:
 
             send_mail(subject='Симпатия',
-                      message='Вы понраивлись {auth_user.email}! Почта участника: {user.email}',
+                      message=f'Вы понраивлись {auth_user.email}! Почта участника: {user.email}',
                       from_email=EMAIL_HOST_USER,
-                      recipient_list=[user.email, ], auth_user=EMAIL_HOST_USER)
+                      recipient_list=[user.email, ])
             auth_user.liked_users.add(user)
             return Response({'Успех': f'Вы поставили симпатию пользователю {user.email}'})
