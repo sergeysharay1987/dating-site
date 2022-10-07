@@ -1,7 +1,10 @@
 from io import BytesIO
+
+from rest_framework.reverse import reverse
+
 from dating_site.settings import BASE_DIR
 from django.core.files.uploadedfile import SimpleUploadedFile, InMemoryUploadedFile
-from django.urls import reverse
+# from django.urls import reverse
 from PIL import Image
 from my_tinder.apps import MyTinderConfig
 from rest_framework.test import APIClient
@@ -64,6 +67,7 @@ queryset = CustomUser.objects.all()[:10]
 @pytest.fixture(params=[queryset])
 def user(request):
     for user in request.param:
+        print(f'user: {user}')
         return user
 
 
@@ -87,8 +91,23 @@ def test_create():
 def test_retrieve(user):
     api_client = APIClient()
     api_client.force_authenticate(CustomUser.objects.get(id=7))
-    api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': user.pk}), format='json')
-    if CustomUser.objects.contains(user):
+    # api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': user.pk}), format='json')
+    api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': 1}), format='json')
+    if CustomUser.objects.contains(CustomUser.objects.get(id=1)):
+        # if CustomUser.objects.contains(user):
+
         assert api_response.status_code == HTTP_200_OK
     else:
+        print(f'current_user: {user.id}')
         assert api_response.status_code == HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_filter():
+    pk = {'pk': 10}
+    api_client = APIClient()
+    api_client.force_authenticate(CustomUser.objects.get(id=7))
+    api_response = api_client.get(reverse(router.urls[0].name), kwargs={'first_name':'Jack'})
+    print(f'reverse(): {api_response.data}')
+    assert api_response.data == CustomUser.objects.filter(first_name__exact='Jack')
+

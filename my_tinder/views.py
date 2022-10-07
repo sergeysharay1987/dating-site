@@ -1,7 +1,6 @@
 from django.core.mail import send_mail
 from rest_framework import viewsets
 from rest_framework.response import Response
-from my_tinder.my_tinder_services.put_watermark import UserFilter
 from dating_site.settings import EMAIL_HOST_USER
 from .serializers import CustomUserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
@@ -19,7 +18,15 @@ class ClientViewSet(viewsets.ModelViewSet):
     parses_classes = [MultiPartParser, FileUploadParser, ]
     filter_backends = [filters.DjangoFilterBackend]
     filterset_fields = ['gender', 'first_name', 'last_name']
-    #filter = [UserFilter,]
+
+
+    def get_queryset(self):
+
+        if self.action == 'list':
+
+            return super().get_queryset().exclude(id=self.request.user.id)
+        else:
+            return super().get_queryset()
 
     def get_permissions(self):
 
@@ -36,6 +43,8 @@ class ClientViewSet(viewsets.ModelViewSet):
 
         auth_user: CustomUser = request.user
         user = CustomUser.objects.get(pk=pk)
+        if auth_user == user:
+            return Response({'Предупреждение': 'Вы не можете поставить симпатию сами себе'})
         if auth_user.liked_users.contains(user) and auth_user != user:
 
             return Response({'Симпатия': f'Вам нравится пользователь {user.email}'})
