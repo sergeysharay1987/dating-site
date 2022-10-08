@@ -20,7 +20,7 @@ from .routers import CustomRouter
 from django.conf.urls.static import static
 from django.conf import settings
 
-router = CustomRouter()
+router = CustomRouter(trailing_slash=False)
 router.register(r'clients', views.ClientViewSet)
 
 urlpatterns = [
