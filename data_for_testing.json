@@ -1,3 +1,4 @@
+
 [
 {
     "model": "sessions.session",
@@ -53,6 +54,14 @@
     "fields": {
         "session_data": "e30:1o3iIy:o686CxANDY-nkJ4CNLGHmx7D3pIYS-xbZgrAQUcWHqk",
         "expire_date": "2022-07-05T18:08:48.653Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "jvn9fqry3esndbz8g3zeergi014xl16a",
+    "fields": {
+        "session_data": ".eJxVjMsOwiAQAP-FsyGwbXl49N5vIMsulaqBpLQn478bkh70OjOZtwh47DkcLW1hZXEV2ovLL4xIz1S64QeWe5VUy76tUfZEnrbJuXJ63c72b5Cx5f4F1M4NEzmryLH2MIzMbmRKRrkhIYLx3pgFCQlA25jYqgn0gqisseLzBfjEN9U:1ogNYO:WCvOyibVcxpFUWkhCMQT0ASCpNN4WC-QgpklwR2gHJ0",
+        "expire_date": "2022-10-20T09:52:32.745Z"
     }
 },
 {
@@ -3525,6 +3534,493 @@
     }
 },
 {
+    "model": "my_tinder.customuser",
+    "pk": 163,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T13:44:21.903Z",
+        "email": "smooth101111@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-20_215039.266594.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 164,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T13:44:40.944Z",
+        "email": "smooth1011QWEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-20_215039.266594_zeaxnhc.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 165,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T16:46:12.529Z",
+        "email": "smooth1011QgfhfWEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/watermark_background.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 166,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T16:46:32.103Z",
+        "email": "smooth1011QgfhfWfdgdfgEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/Screenshot_2021-05-18-15-00-44-152_ru.loveplanet.app.jpg",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 167,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T16:47:11.052Z",
+        "email": "smooth1011QgfhfWfgfdgdgdfgEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-19_104502.871204.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 168,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T17:19:17.118Z",
+        "email": "smooth1011QgfhfWfgfdgdgdfgdfsEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-19_104502.871204_AwKBLci.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 169,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T17:19:52.327Z",
+        "email": "smooth1011QgfhfWfgfdasdasgdgdfgdfsEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-19_104502.871204_lc1vHGv.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 170,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T19:47:01.218Z",
+        "email": "smooth1011sdasdQgfhfWfgfdasdasgdgdfgdfsEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-25_214209.379626.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 171,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T19:47:32.356Z",
+        "email": "smooth1011sdasdQgfhfWfgfasddasdasgdgdfgdfsEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-25_214209.379626_zY2arrU.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 172,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T19:47:47.318Z",
+        "email": "smooth1011sdasdQgfhfWfgfasddasdasdasgdgdfgdfsEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-25_214209.379626_E1FutxG.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 173,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T19:48:07.030Z",
+        "email": "smooth1011sdasdQgfhfWfgfasddasdasdfasgdgdfgdfsEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-25_214209.379626_5VjKHgt.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 174,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T19:48:30.172Z",
+        "email": "smooth1011sdasdQgfhfWfgfasdddasdasdfasgdgdfgdfsEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-25_214209.379626_yDpGwnG.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 175,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T19:48:56.722Z",
+        "email": "smooth1011sdasdQgfhfWfgfasdddasdafsdfasgdgdfgdfsEQW11@gmail.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-25_214209.379626_YoGLTX5.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 176,
+    "fields": {
+        "password": "appleapple",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-03T20:04:28Z",
+        "email": "smooth1011@yandex.com",
+        "avatar": "photos/2022/10/03/new_imahe_2022-03-25_214209.379626_vmzVfbs.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 181,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-04T20:45:20.914Z",
+        "email": "cerysh115@gmail.com",
+        "avatar": "photos/2022/10/04/new_image_2022-03-19_224441.496427_SUHD6ii.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 182,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$AhLtlYNEnZWjk0sScsCKv5$R+kToW5jdkYXjr4Y7ahh02+uzN73I51XJhETGLB3ErQ=",
+        "last_login": null,
+        "is_superuser": true,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2022-10-06T09:51:35.041Z",
+        "email": "admib@gmail.com",
+        "avatar": "",
+        "gender": "",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 183,
+    "fields": {
+        "password": "appleapple",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Julia",
+        "last_name": "Semenova",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-06T10:16:35Z",
+        "email": "semenova_10@gmail.com",
+        "avatar": "photos/2022/10/06/new_imahe_2022-04-02_114123.095034.png",
+        "gender": "Ж",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [
+            [
+                "qeqweqw@hmail.com"
+            ]
+        ],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 184,
+    "fields": {
+        "password": "appleapple",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Petya",
+        "last_name": "Petrov",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-06T10:18:09Z",
+        "email": "Petrov_10@gmail.com",
+        "avatar": "photos/2022/10/06/new_image_2022-03-19_224407.329549.png",
+        "gender": "М",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 185,
+    "fields": {
+        "password": "appleapple",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "David",
+        "last_name": "Peterson",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-06T10:18:55Z",
+        "email": "Peterson@gmail.com",
+        "avatar": "",
+        "gender": "М",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 186,
+    "fields": {
+        "password": "appleapple",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Jack",
+        "last_name": "Sparrow",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-06T10:19:35Z",
+        "email": "Jack@gmail.com",
+        "avatar": "",
+        "gender": "М",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 187,
+    "fields": {
+        "password": "appleapple",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "John",
+        "last_name": "Sidorov",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-06T10:20:18Z",
+        "email": "John@gmail.com",
+        "avatar": "photos/2022/10/06/new_image_2022-03-19_224426.133885.png",
+        "gender": "М",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 188,
+    "fields": {
+        "password": "appleapple",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Jack",
+        "last_name": "Sparrow_little",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-06T17:43:01Z",
+        "email": "sparroe_little@gmail.com",
+        "avatar": "photos/2022/10/06/new_image_2022-03-19_224426.133885_1aggyIN.png",
+        "gender": "М",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
+    "model": "my_tinder.customuser",
+    "pk": 189,
+    "fields": {
+        "password": "appleapple",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "David",
+        "last_name": "Wilkinson",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-10-06T17:43:58Z",
+        "email": "Wilkinson@yandex.ru",
+        "avatar": "",
+        "gender": "М",
+        "groups": [],
+        "user_permissions": [],
+        "liked_users": [],
+        "unliked_users": []
+    }
+},
+{
     "model": "account.emailaddress",
     "pk": 1,
     "fields": {
@@ -3726,6 +4222,168 @@
         ],
         "object_id": "19",
         "object_repr": "3a6db3dd429bdef77e222a946358ee5bdba39e36",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+        "action_time": "2022-10-06T10:04:02.715Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "176",
+        "object_repr": "smooth1011@yandex.com",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Password\", \"\\u042d\\u043b\\u0435\\u043a\\u0442\\u0440\\u043e\\u043d\\u043d\\u0430\\u044f \\u043f\\u043e\\u0447\\u0442\\u0430\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+        "action_time": "2022-10-06T10:18:04.021Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "183",
+        "object_repr": "semenova_10@gmail.com",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+        "action_time": "2022-10-06T10:18:53.579Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "184",
+        "object_repr": "Petrov_10@gmail.com",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+        "action_time": "2022-10-06T10:19:35.748Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "185",
+        "object_repr": "Peterson@gmail.com",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+        "action_time": "2022-10-06T10:20:18.295Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "186",
+        "object_repr": "Jack@gmail.com",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+        "action_time": "2022-10-06T10:21:15.391Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "187",
+        "object_repr": "John@gmail.com",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+        "action_time": "2022-10-06T17:43:01.501Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "7",
+        "object_repr": "ivanov_10@gmail.com",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+        "action_time": "2022-10-06T17:43:57.910Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "188",
+        "object_repr": "sparroe_little@gmail.com",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+        "action_time": "2022-10-06T17:44:42.379Z",
+        "user": [
+            "admin_1@gmail.com"
+        ],
+        "content_type": [
+            "my_tinder",
+            "customuser"
+        ],
+        "object_id": "189",
+        "object_repr": "Wilkinson@yandex.ru",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
