@@ -22,6 +22,7 @@ from django.db.models import F
 
 class CustomUserSerializerTesting(ModelSerializer):
     DOMAIN = 'http://testserver'
+
     class Meta:
         model = CustomUser
         fields = ['avatar', 'email', 'gender', 'first_name', 'last_name']
@@ -89,6 +90,12 @@ data = {
 queryset = CustomUser.objects.all()[:10]
 
 
+@pytest.fixture(autouse=True)
+def use_dummy_cache_backend(settings):
+    settings.MEDIA_URL = 'http://testserver'
+    settings.ALLOWED_HOSTS = ['testserver']
+
+
 @pytest.fixture(params=[queryset])
 def user(request):
     for user in request.param:
@@ -98,20 +105,13 @@ def user(request):
 
 @pytest.mark.django_db
 def test_list():
-    DOMAIN = 'http://testserver'
     queryset = CustomUser.objects.all().exclude(id=7)
     api_client = APIClient()
     api_client.force_authenticate(CustomUser.objects.get(id=7))
     api_response = api_client.get(path=reverse(router.urls[0].name), format='json')
-    #queryset = queryset.filter(pk=1).update(avatar=DOMAIN + F('avatar'))
-    # print(f'api_response.get_host(): {api_response.get_host}')
-    # print(f'queryset: {queryset}')
-    #print(f'u_1: {CustomUser.objects.get(id=1).avatar.url}')
-    # api_response.render()
-    serializer = CustomUserSerializerTesting(queryset, many=True)
-    print(f'serializer.data: {serializer.data}')
+    serializer = CustomUserSerializer(queryset, many=True)
     assert api_response.status_code == HTTP_200_OK
-    assert (api_response.data) == (serializer.data)
+    assert api_response.data == serializer.data
 
 
 @pytest.mark.django_db
@@ -125,28 +125,32 @@ def test_create():
 def test_retrieve(user):
     api_client = APIClient()
     api_client.force_authenticate(CustomUser.objects.get(id=7))
-    # api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': user.pk}), format='json')
     api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': 1}), format='json')
-    if CustomUser.objects.contains(CustomUser.objects.get(id=1)):
-        # if CustomUser.objects.contains(user):
+    other_user = CustomUser.objects.get(id=1)
+    if CustomUser.objects.contains(other_user):
 
+        serilaizer = CustomUserSerializer(other_user)
         assert api_response.status_code == HTTP_200_OK
+        assert api_response.data == serilaizer.data
     else:
-        print(f'current_user: {user.id}')
+
         assert api_response.status_code == HTTP_404_NOT_FOUND
 
-# @pytest.mark.django_db
-# def test_filter():
-#     pk = {'pk': 10}
-#     api_client = APIClient()
-#     api_client.force_authenticate(CustomUser.objects.get(id=7))
-#     url = reverse(router.urls[0].name)
-#     api_response = api_client.get(url+'/'+'?first_name=Jack')
-#     #print(f'reverse(): {reverse(viewname=url)}')
-#     assert url == '/my_tinder/list'
-#     assert api_response.data ==
-#     serilizer_data = CustomUserSerializer(api_response, many=True).data
-# print(f'api_response: {api_response.data}')
-# print(f'serilizer_data: {serilizer_data}')
-# assert serilizer_data == api_response.data
-# assert api_response.data == CustomUser.objects.filter(first_name__exact='Jack')
+
+# @pytest.fixture(params=[])
+# def quey_params()
+
+
+
+
+
+@pytest.mark.django_db
+def test_filter():
+
+    query_params = {'first_name': 'Jack'}
+    api_client = APIClient()
+    api_client.force_authenticate(CustomUser.objects.get(id=7))
+    url = reverse(router.urls[0].name)
+    api_response = api_client.get(url, query_params)
+    serilizer = CustomUserSerializer(CustomUser.objects.filter(first_name__exact='Jack'), many=True)
+    assert serilizer.data == api_response.data
