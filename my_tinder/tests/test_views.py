@@ -41,21 +41,9 @@ class CustomUserSerializerTesting(ModelSerializer):
         return super().save()
 
 
-@pytest.fixture(scope='session')
-def django_db_setup(django_db_blocker):
-    with django_db_blocker.unblock():
-        call_command('loaddata', 'data_for_testing.json')
-
-
 file_name = 'image.png'
 image_path = f'/{BASE_DIR}/{MyTinderConfig.name}/tests/{file_name}'
 
-
-# def get_file_data(path: str):
-#     image = Image.open(path)
-#     bytes_io = BytesIO()
-#     image.save(bytes_io, 'png')
-#     return bytes_io.getvalue()
 
 def get_file_data(path: str):
     image = Image.open(path)
@@ -70,15 +58,6 @@ size = Image.open(image_path).size
 file_data = get_file_data(image_path)
 file_data_form = {'avatar': SimpleUploadedFile('image.png', file_data,
                                                content_type=f'image/{file_name.split(".")[-1]}')}
-
-# data = {'avatar': InMemoryUploadedFile(name='image.png', size=size, charset=None,
-#                                        content_type=f'image/{file_name.split(".")[-1]}', field_name='avatar',
-#                                        file=file_data),
-#         'gender': 'М',
-#         'last_name': 'Ivanov',
-#         'email': 'Ivanov_1000@gmil.com',
-#         'password1': 'qwerty1000',
-#         'password2': 'qwerty1000'}
 
 data = {
     'gender': 'М',
@@ -137,20 +116,12 @@ def test_retrieve(user):
         assert api_response.status_code == HTTP_404_NOT_FOUND
 
 
-# @pytest.fixture(params=[])
-# def quey_params()
-
-
-
-
-
 @pytest.mark.django_db
 def test_filter():
-
     query_params = {'first_name': 'Jack'}
     api_client = APIClient()
     api_client.force_authenticate(CustomUser.objects.get(id=7))
     url = reverse(router.urls[0].name)
     api_response = api_client.get(url, query_params)
-    serilizer = CustomUserSerializer(CustomUser.objects.filter(first_name__exact='Jack'), many=True)
-    assert serilizer.data == api_response.data
+    serializer = CustomUserSerializer(CustomUser.objects.filter(first_name__exact='Jack'), many=True)
+    assert serializer.data == api_response.data

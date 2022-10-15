@@ -4,6 +4,8 @@
 Первоначальная установка
 ++++++++++++++++++++++++
 
+После первоначальной установики необходимо выполнять только раздел `Обновление`_ для обновления
+
 #. Установить Docker по инструкции: https://docs.docker.com/engine/install/ubuntu/
 
 #. Добавить своего пользователья в группу docker::
@@ -25,6 +27,16 @@
     poetry config virtualenvs.path ${HOME}/.virtualenvs && \
     poetry run pip install pip==${PIP_REQUIRED_VERSION}
 
+Обновление
+++++++++++
+
+#. (в отдельном окне терминала) Запустить сервисы с помощью Docker::
+
+    make up-dependencies-only
+
+#. Запустить обновление::
+
+    make update
 
 Запуск
 ++++++
@@ -32,3 +44,7 @@
 #. (в отдельном окне терминала) Запустить сервисы с помощью Docker::
 
     make up-dependencies-only
+
+#. (в отдельном окне терминала) Запустить сервер::
+
+    make run-server
