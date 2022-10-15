@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14.4-alpine
+    environment:
+      - POSTGRES_DB=dating_site
+      - POSTGRES_USER=dating_site
+      - POSTGRES_PASSWORD=dating_site
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+
+volumes:
+  postgresql-data:
+    driver: local
