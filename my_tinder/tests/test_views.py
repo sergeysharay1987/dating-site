@@ -13,28 +13,7 @@ from django.core.management import call_command
 from my_tinder.my_tinder_services.put_watermark import put_watermark
 from my_tinder.urls import router
 from my_tinder.serializers import CustomUserSerializer
-
-
-class CustomUserSerializerTesting(ModelSerializer):
-    DOMAIN = 'http://testserver'
-
-    class Meta:
-        model = CustomUser
-        fields = ['avatar', 'email', 'gender', 'first_name', 'last_name']
-
-    def save(self, **kwargs):
-        if self.data.get('avatar'):
-            relative_url = self.data['avatar'].url
-            self.data['avatar'].url = CustomUserSerializerTesting.DOMAIN + relative_url
-            print(f'self.data["avatar"].url: {self.data["avatar"].url}')
-            return super().save()
-        if self.validated_data.get('avatar'):
-            base_image: Image = Image.open(self.validated_data['avatar'].file)
-            watermarked_image: BytesIO = put_watermark(base_image)
-            self.validated_data['avatar'].file = watermarked_image
-
-        return super().save()
-
+from model_bakery import baker
 
 file_name = 'image.png'
 image_path = f'/{BASE_DIR}/{MyTinderConfig.name}/tests/{file_name}'
@@ -61,7 +40,7 @@ data = {
     'password1': 'qwerty1000',
     'password2': 'qwerty1000'}
 
-queryset = CustomUser.objects.all()[:10]
+#queryset = baker.make('my_tinder.CustomUser', _quantity=10)
 PATH_LIST = 'http://testserver/my_tinder/clients/list'
 PATH_RETRIEVE = 'http://testserver/my_tinder/clients/1'
 
@@ -72,55 +51,74 @@ def use_dummy_cache_backend(settings):
     settings.ALLOWED_HOSTS = ['testserver']
 
 
-@pytest.fixture(params=[queryset])
-def user(request):
-    for user in request.param:
-        print(f'user: {user}')
-        return user
+# @pytest.fixture(params=[queryset])
+# def user(request):
+#     for user in request.param:
+#         print(f'user: {user}')
+#         return user
+
+
+# @pytest.fixture(params=[queryset])
+# def user(db, request):
+#     for user in request.param:
+#         print(f'user: {user}')
+#         return user
+
+
+@pytest.fixture()
+def one_user():
+    print(f'one_user: {baker.make("CustomUser")}')
+    return baker.make(CustomUser)
 
 
 @pytest.mark.django_db
-def test_list():
-    queryset = CustomUser.objects.all().exclude(id=7)
-    api_client = APIClient()
-    api_client.force_authenticate(CustomUser.objects.get(id=7))
-    api_response = api_client.get(path=reverse(router.urls[0].name), format='json')
-    #serializer = CustomUserSerializer(queryset, many=True)
-    print(f'api_response.json(): {dir(api_client)}')
-   # assert api_response.status_code == HTTP_200_OK
-    assert api_response.status_code != HTTP_200_OK
-    #assert api_response.data == serializer.data
-    #assert api_response.json() == serializer.data
-
-@pytest.mark.django_db
-def test_create():
-    api_client = APIClient()
-    api_response = api_client.post(path=reverse(router.urls[2].name), data=data, format='json')
-    assert api_response.status_code == HTTP_201_CREATED
+def test_one_user(one_user):
+    assert isinstance(one_user, CustomUser)
 
 
-@pytest.mark.django_db
-def test_retrieve(user):
-    api_client = APIClient()
-    api_client.force_authenticate(CustomUser.objects.get(id=7))
-    api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': 1}), format='json')
-    other_user = CustomUser.objects.get(id=1)
-    if CustomUser.objects.contains(other_user):
-
-        serilaizer = CustomUserSerializer(other_user)
-        assert api_response.status_code == HTTP_200_OK
-        assert api_response.data == serilaizer.data
-    else:
-
-        assert api_response.status_code == HTTP_404_NOT_FOUND
-
-
-@pytest.mark.django_db
-def test_filter():
-    query_params = {'first_name': 'Jack'}
-    api_client = APIClient()
-    api_client.force_authenticate(CustomUser.objects.get(id=7))
-    url = reverse(router.urls[0].name)
-    api_response = api_client.get(url, query_params)
-    serializer = CustomUserSerializer(CustomUser.objects.filter(first_name__exact='Jack'), many=True)
-    assert serializer.data == api_response.data
+# @pytest.mark.django_db
+# def test_list():
+#     queryset = CustomUser.objects.all().exclude(id=7)
+#     api_client = APIClient()
+#     api_client.force_authenticate(CustomUser.objects.get(id=7))
+#     api_response = api_client.get(path=reverse(router.urls[0].name), format='json')
+#     # serializer = CustomUserSerializer(queryset, many=True)
+#     print(f'api_response.json(): {dir(api_client)}')
+#     # assert api_response.status_code == HTTP_200_OK
+#     assert api_response.status_code != HTTP_200_OK
+#     # assert api_response.data == serializer.data
+#     # assert api_response.json() == serializer.data
+#
+#
+# @pytest.mark.django_db
+# def test_create():
+#     api_client = APIClient()
+#     api_response = api_client.post(path=reverse(router.urls[2].name), data=data, format='json')
+#     assert api_response.status_code == HTTP_201_CREATED
+#
+#
+# @pytest.mark.django_db
+# def test_retrieve(user):
+#     api_client = APIClient()
+#     api_client.force_authenticate(CustomUser.objects.get(id=7))
+#     api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': 1}), format='json')
+#     other_user = CustomUser.objects.get(id=1)
+#     if CustomUser.objects.contains(other_user):
+#
+#         serilaizer = CustomUserSerializer(other_user)
+#         assert api_response.status_code == HTTP_200_OK
+#         assert api_response.data == serilaizer.data
+#     else:
+#
+#         assert api_response.status_code == HTTP_404_NOT_FOUND
+#
+#
+# @pytest.mark.django_db
+# def test_filter():
+#     query_params = {'first_name': 'Jack'}
+#     api_client = APIClient()
+#     api_client.force_authenticate(CustomUser.objects.get(id=7))
+#     url = reverse(router.urls[0].name)
+#     api_response = api_client.get(url, query_params)
+#     serializer = CustomUserSerializer(CustomUser.objects.filter(first_name__exact='Jack'), many=True)
+#     assert serializer.data == api_response.data
