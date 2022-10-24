@@ -176,6 +176,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "model-bakery"
+version = "1.8.0"
+description = "Smart object creation facility for Django."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = ">=3.2"
+
+[[package]]
 name = "oauthlib"
 version = "3.2.1"
 description = "A generic, spec-compliant, thorough implementation of the OAuth request-signing logic"
@@ -415,7 +426,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "3ac80fefcf434d8e6c96d226a4b9d8ad4611544a29a1c07e602f609e1ea97d2d"
+content-hash = "c03dfd560ffe5a6d420507b9361d164d09a782442aabd25f22d5e1c705f5f976"
 
 [metadata.files]
 asgiref = [
@@ -561,6 +572,10 @@ idna = [
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
+]
+model-bakery = [
+    {file = "model_bakery-1.8.0-py2.py3-none-any.whl", hash = "sha256:da0dc0b5005ddf2936f66936eb96cc2aed2356bf7402833080535c2279c42931"},
+    {file = "model_bakery-1.8.0.tar.gz", hash = "sha256:98702ba2986adaf30aab417bca5209b6961b9ce8d31fe4a573161f9198647401"},
 ]
 oauthlib = [
     {file = "oauthlib-3.2.1-py3-none-any.whl", hash = "sha256:88e912ca1ad915e1dcc1c06fc9259d19de8deacd6fd17cc2df266decc2e49066"},
