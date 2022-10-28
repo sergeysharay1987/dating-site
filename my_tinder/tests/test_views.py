@@ -1,4 +1,7 @@
 from io import BytesIO
+
+import django
+from django.db.models import QuerySet
 from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 from dating_site.settings import BASE_DIR
@@ -37,12 +40,12 @@ data = {
     'gender': 'М',
     'last_name': 'Ivanov',
     'email': 'Ivanov_1000@gmail.com',
-    'password1': 'qwerty1000',
-    'password2': 'qwerty1000'}
+    'password': 'qwerty1000'}
 
-#queryset = baker.make('my_tinder.CustomUser', _quantity=10)
-PATH_LIST = 'http://testserver/my_tinder/clients/list'
-PATH_RETRIEVE = 'http://testserver/my_tinder/clients/1'
+# queryset = baker.make('my_tinder.CustomUser', _quantity=10)
+LIST_PATH = 'http://testserver/my_tinder/list'
+RETRIEVE_PATH = 'http://testserver/my_tinder/clients/3'
+CREATE_PATH = 'http://testserver/my_tinder/clients/create'
 
 
 @pytest.fixture(autouse=True)
@@ -66,53 +69,74 @@ def use_dummy_cache_backend(settings):
 
 
 @pytest.fixture()
-def one_user():
+def one_user(db):
     print(f'one_user: {baker.make("CustomUser")}')
     return baker.make(CustomUser)
 
 
+@pytest.fixture()
+def list_users(db):
+    print(f'one_user: {baker.make("CustomUser")}')
+    users = baker.make(CustomUser, _quantity=5)
+    return users
+    # for user in users:
+    #     return user
+
+
+# @pytest.mark.django_db
+# def test_one_user(one_user):
+#     #print(f'custimusers_from_baker: {}')
+#     assert isinstance(one_user, CustomUser)
+
+# @pytest.mark.django_db
+# def test_list_users(list_users):
+#     print(f'customusers_from_baker: {list_users}')
+#     assert isinstance(list_users[0], CustomUser)
+#     assert len(list_users) == 5
+
+
 @pytest.mark.django_db
-def test_one_user(one_user):
-    assert isinstance(one_user, CustomUser)
+def test_list(one_user):
+    queryset = CustomUser.objects.all().exclude(id=one_user.id)
+    api_client = APIClient()
+    api_client.force_authenticate(CustomUser.objects.get(id=one_user.id))
+    # api_response = api_client.get(path=reverse(router.urls[0].name), format='json')
+    api_response = api_client.get(path=LIST_PATH, format='json')
+    # serializer = CustomUserSerializer(queryset, many=True)
+    # print(f'api_response.json(): {dir(api_client)}')
+    # assert api_response.status_code == HTTP_200_OK
+    assert api_response.status_code == HTTP_200_OK
+    # assert api_response.data == serializer.data
+    # assert api_response.json() == serializer.data
 
 
-# @pytest.mark.django_db
-# def test_list():
-#     queryset = CustomUser.objects.all().exclude(id=7)
-#     api_client = APIClient()
-#     api_client.force_authenticate(CustomUser.objects.get(id=7))
-#     api_response = api_client.get(path=reverse(router.urls[0].name), format='json')
-#     # serializer = CustomUserSerializer(queryset, many=True)
-#     print(f'api_response.json(): {dir(api_client)}')
-#     # assert api_response.status_code == HTTP_200_OK
-#     assert api_response.status_code != HTTP_200_OK
-#     # assert api_response.data == serializer.data
-#     # assert api_response.json() == serializer.data
-#
-#
-# @pytest.mark.django_db
-# def test_create():
-#     api_client = APIClient()
-#     api_response = api_client.post(path=reverse(router.urls[2].name), data=data, format='json')
-#     assert api_response.status_code == HTTP_201_CREATED
-#
-#
-# @pytest.mark.django_db
-# def test_retrieve(user):
-#     api_client = APIClient()
-#     api_client.force_authenticate(CustomUser.objects.get(id=7))
-#     api_response = api_client.get(path=reverse(router.urls[4].name, kwargs={'pk': 1}), format='json')
-#     other_user = CustomUser.objects.get(id=1)
-#     if CustomUser.objects.contains(other_user):
-#
-#         serilaizer = CustomUserSerializer(other_user)
-#         assert api_response.status_code == HTTP_200_OK
-#         assert api_response.data == serilaizer.data
-#     else:
-#
-#         assert api_response.status_code == HTTP_404_NOT_FOUND
-#
-#
+@pytest.mark.django_db
+def test_create():
+    api_client = APIClient()
+    api_response = api_client.post(path=CREATE_PATH, data=data, format='json')
+    assert api_response.status_code == HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_retrieve():
+    api_client = APIClient()
+    auth_user = CustomUser.objects.get(id=1)
+    print(f'auth_user: {auth_user}')
+    api_client.force_authenticate(auth_user)
+    api_response = api_client.get(path=RETRIEVE_PATH, format='json')
+    # other_user_id = not one_user.id
+    # other_user = CustomUser.objects.get(id=RETRIEVE_PATH[-1])
+    assert api_response.status_code == HTTP_200_OK
+    # if CustomUser.objects.contains(other_user):
+    #
+    #     serilaizer = CustomUserSerializer(other_user)
+    #     assert api_response.status_code == HTTP_200_OK
+    #     assert api_response.data == serilaizer.data
+    # else:
+    #
+    #     assert api_response.status_code == HTTP_404_NOT_FOUND
+
+
 # @pytest.mark.django_db
 # def test_filter():
 #     query_params = {'first_name': 'Jack'}
