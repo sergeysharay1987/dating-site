@@ -1,4 +1,4 @@
-from rest_framework.routers import Route, DynamicRoute, SimpleRouter, DefaultRouter
+from rest_framework.routers import DefaultRouter, Route
 
 
 class CustomRouter(DefaultRouter):
@@ -18,7 +18,7 @@ class CustomRouter(DefaultRouter):
             mapping={'post': 'create'},
             name='{basename}-create',
             detail=False,
-            initkwargs={'suffix': 'List'}
+            initkwargs={}
         ),
         Route(
             url=r'^{prefix}/{lookup}$',
@@ -43,7 +43,7 @@ class CustomRouter(DefaultRouter):
         ),
         Route(
             url=r'^{prefix}/{lookup}/match$',
-            mapping={'post' or 'put': 'add_liked_user'},
+            mapping={'post' or 'put': 'add-liked-user'},
             name='{basename}-add_liked_user',
             detail=True,
             initkwargs={}

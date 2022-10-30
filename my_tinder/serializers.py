@@ -6,6 +6,7 @@ from PIL import Image
 
 
 class CustomUserSerializer(ModelSerializer):
+
     class Meta:
         model = CustomUser
         fields = ['avatar', 'email', 'gender', 'first_name', 'last_name']
