@@ -10,12 +10,7 @@ class CreateClientForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ['avatar',
-                  'gender',
-                  'last_name',
-                  'email',
-                  'password1',
-                  'password2']
+        fields = ['avatar', 'gender', 'last_name', 'email', 'password1', 'password2']
 
         widgets = {  # 'username': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -25,13 +20,28 @@ class CreateClientForm(UserCreationForm):
 
 
 class ToLikeClientForm(ModelForm):
-    like = CharField(label='', max_length=100, widget=forms.TextInput(
-        attrs={'class': 'btn btn-light active', 'type': 'submit', 'value': 'Нравится'}))
-    dislike = CharField(label='', max_length=100,
-                        widget=forms.TextInput(
-                            attrs={'class': 'btn btn-light active', 'type': 'submit', 'aria-pressed':'True', 'value': 'Не нравится'}))
+    like = CharField(
+        label='',
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'btn btn-light active',
+            'type': 'submit',
+            'value': 'Нравится'
+        })
+    )
+    dislike = CharField(
+        label='',
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'btn btn-light active',
+                'type': 'submit',
+                'aria-pressed': 'True',
+                'value': 'Не нравится'
+            }
+        )
+    )
 
     class Meta:
         model = CustomUser
         fields = ['like']
-

@@ -15,14 +15,11 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
 from dating_site import settings
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('my_tinder/', include('my_tinder.urls'))
-]
+urlpatterns = [path('admin/', admin.site.urls), path('my_tinder/', include('my_tinder.urls'))]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

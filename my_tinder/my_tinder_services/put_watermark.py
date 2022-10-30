@@ -1,4 +1,3 @@
-from PIL.Image import Image
 from PIL import Image
 from io import BytesIO
 from my_tinder.apps import MyTinderConfig
@@ -25,12 +24,12 @@ def put_watermark(base_image: Image, watermark_path: str = path_to_watermark) ->
 
 
 class UserFilter(filters.FilterSet):
+
     class Meta:
         model = CustomUser
         fields = {
             'id': ['exact'],
             'gender': ['exact'],
             'first_name': ['icontains', 'lt', 'gt'],
-            'last_name': ['icontains', 'lt', 'gt']}
-
-        #fields = ['gender','first_name', 'last_name']
+            'last_name': ['icontains', 'lt', 'gt']
+        }
