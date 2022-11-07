@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'cuser',
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -136,7 +137,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-AUTH_USER_MODEL = 'my_tinder.CustomUser'
+AUTH_USER_MODEL = 'cuser.CUser'
 STATIC_ROOT = '/static/'
 STATIC_URL = '/static/'
 
