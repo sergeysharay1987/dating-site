@@ -164,6 +164,17 @@ python-versions = ">=3.7"
 Django = ">=3.2"
 
 [[package]]
+name = "django-username-email"
+version = "2.5.3"
+description = "Custom Django User model that makes email the USERNAME_FIELD."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = ">=3.2"
+
+[[package]]
 name = "djangorestframework"
 version = "3.13.1"
 description = "Web APIs for Django, made easy."
@@ -550,7 +561,7 @@ testing = ["coverage (>=6.2)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "f8a13e5c9599ff8441cabbfc42be83a75c864935c802bcd737c67652cd440da3"
+content-hash = "8afbf65ccd8e7307a87295526acdd58dd8b86f60df1cfc51a3cb443f25d76e41"
 
 [metadata.files]
 asgiref = [
@@ -692,6 +703,10 @@ django-allauth = [
 django-filter = [
     {file = "django-filter-22.1.tar.gz", hash = "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"},
     {file = "django_filter-22.1-py3-none-any.whl", hash = "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb"},
+]
+django-username-email = [
+    {file = "django-username-email-2.5.3.tar.gz", hash = "sha256:ea3a49e5400322dfc86faeac17f82ed954305a408bea66a7653ae82ed40b7bcb"},
+    {file = "django_username_email-2.5.3-py3-none-any.whl", hash = "sha256:358a13aeffe18ac68bb95fc94c1e5c6375b4c534289cdf85d8542b459d155b79"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.13.1-py3-none-any.whl", hash = "sha256:24c4bf58ed7e85d1fe4ba250ab2da926d263cd57d64b03e8dcef0ac683f8b1aa"},
