@@ -1,8 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from rest_framework import viewsets
 from rest_framework.response import Response
 from dating_site.settings import EMAIL_HOST_USER
-from .serializers import CustomUserSerializer
+from .serializers import CreateUserSerializer, UserSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from my_tinder.models import CustomUser
@@ -12,8 +13,7 @@ from django_filters import rest_framework as filters
 
 
 class ClientViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
+    queryset = get_user_model().objects.all()
     authentication_classes = [
         TokenAuthentication,
     ]
@@ -23,6 +23,12 @@ class ClientViewSet(viewsets.ModelViewSet):
     ]
     filter_backends = [filters.DjangoFilterBackend]
     filterset_fields = ['gender', 'first_name', 'last_name']
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve', 'delete']:
+            return UserSerializer
+        else:
+            return CreateUserSerializer
 
     def get_queryset(self):
 
@@ -48,7 +54,7 @@ class ClientViewSet(viewsets.ModelViewSet):
     def add_liked_user(self, request, pk=None):
 
         auth_user: CustomUser = request.user
-        user = CustomUser.objects.get(pk=pk)
+        user = get_user_model().objects.get(pk=pk)
         if auth_user == user:
             return Response({'Предупреждение': 'Вы не можете поставить симпатию сами себе'})
         if auth_user.liked_users.contains(user) and auth_user != user:
@@ -58,7 +64,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
             send_mail(
                 subject='Симпатия',
-                message=f'Вы понраивлись {auth_user.email}! Почта участника: {user.email}',
+                message=f'Вы понравились {auth_user.email}! Почта участника: {user.email}',
                 from_email=EMAIL_HOST_USER,
                 recipient_list=[
                     user.email,
