@@ -1,4 +1,5 @@
 from my_tinder.models import CustomUser
+from rest_framework.test import APIClient
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND
 import pytest
 
@@ -15,14 +16,12 @@ LOGIN_PATH = 'http://testserver/my_tinder/dj-rest-auth/login/'
 
 @pytest.mark.django_db
 def test_list(api_client):
-
     api_response = api_client.get(path=LIST_PATH, format='json')
     assert api_response.status_code == HTTP_200_OK
 
 
 @pytest.mark.django_db
 def test_create(api_client):
-
     api_response = api_client.post(path=CREATE_PATH, data=data, format='json')
     assert api_response.status_code == HTTP_201_CREATED
 
@@ -44,6 +43,14 @@ def test_filter(api_client, list_users):
     assert api_response.status_code == HTTP_200_OK
 
 
-def test_login(api_client):
-    api_response = api_client.post(LOGIN_PATH, data={'email': 'Dayve@gmail.com', 'password': 'appleapple'})
+@pytest.mark.django_db
+def test_login():
+    auth_user = CustomUser.objects.create_user(email='auth_user@gmail.com', password='appleapple')
+    api_client = APIClient()
+    api_response = api_client.post(
+        LOGIN_PATH, data={
+            'email': auth_user.email,
+            'password': 'appleapple'
+        }, format='json'
+    )
     assert api_response.status_code == 200
