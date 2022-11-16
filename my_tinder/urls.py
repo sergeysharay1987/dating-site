@@ -13,19 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 from django.urls import include, path
 from my_tinder import views
 from .routers import CustomRouter
 from django.conf.urls.static import static
 from dj_rest_auth.views import *
 
-router = CustomRouter(trailing_slash=False)
+router = CustomRouter()
 router.register(r'clients', views.ClientViewSet)
 
 urlpatterns = [
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),  # возможно будет не нужен этот url
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('', include(router.urls)),
 ]
 if settings.DEBUG:

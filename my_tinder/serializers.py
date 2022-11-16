@@ -1,24 +1,31 @@
 from io import BytesIO
 from django.contrib.auth import get_user_model
-from rest_framework.serializers import CharField, ModelSerializer
+from rest_framework.fields import ImageField
+from rest_framework.serializers import ChoiceField, ModelSerializer
+
+from my_tinder.models import Gender
 from my_tinder.my_tinder_services.put_watermark import put_watermark
 from PIL import Image
+from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.serializers import LoginSerializer
 
 
-class CreateUserSerializer(ModelSerializer):
-    gender = CharField(required=True)
+class CreateUserSerializer(RegisterSerializer):
+    username = None
+    avatar = ImageField(required=False)
+    gender = ChoiceField(choices=Gender.choices)
 
-    class Meta:
-        model = get_user_model()
-        fields = ['avatar', 'email', 'gender', 'first_name', 'last_name', 'password']
-
-    def save(self, **kwargs):
-        if self.validated_data.get('avatar'):
-            base_image: Image = Image.open(self.validated_data['avatar'].file)
+    def custom_signup(self, request, user):
+        if user.avatar:
+            base_image: Image = Image.open(user.avatar)
             watermarked_image: BytesIO = put_watermark(base_image)
-            self.validated_data['avatar'].file = watermarked_image
+            user.avatar = watermarked_image
 
-        return super().save(**kwargs)
+        return user
+
+
+class LoginUserSerializer(LoginSerializer):
+    username = None
 
 
 class UserDetailSerializer(ModelSerializer):
