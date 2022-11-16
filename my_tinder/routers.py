@@ -14,13 +14,6 @@ class CustomRouter(DefaultRouter):
             initkwargs={'suffix': 'List'}
         ),
         Route(
-            url=r'^{prefix}/create$',
-            mapping={'post': 'create'},
-            name='{basename}-create',
-            detail=False,
-            initkwargs={}
-        ),
-        Route(
             url=r'^{prefix}/{lookup}$',
             mapping={'get': 'retrieve'},
             name='{basename}-detail',

@@ -122,6 +122,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'dj_rest_auth.serializers.LoginSerializer',
+    'TOKEN_SERIALIZER': 'dj_rest_auth.serializers.TokenSerializer',
+    'REST_AUTH_REGISTER_SERIALIZERS': 'my_tinder.serializers.CreateUserSerializer'
+}
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
