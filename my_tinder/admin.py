@@ -6,12 +6,13 @@ from cuser.admin import UserAdmin
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ('email', 'gender', 'first_name', 'last_name')
+    list_display = UserAdmin.list_display + ('gender',)
     list_display_links = (
         'email',
         'first_name',
     )
-    search_fields = ('email', 'gender')
+    UserAdmin.fieldsets[1][1]['fields'] = UserAdmin.fieldsets[1][1]['fields'] + ('avatar', 'gender')
+    fieldsets = UserAdmin.fieldsets
 
 
 admin.site.register(get_user_model(), CustomUserAdmin)
