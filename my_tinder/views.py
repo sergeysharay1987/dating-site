@@ -1,15 +1,18 @@
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.response import Response
 from dating_site.settings import EMAIL_HOST_USER
-from .serializers import CreateUserSerializer, UserSerializer
+from .serializers import CreateUserSerializer, UserDetailSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from my_tinder.models import CustomUser
 from rest_framework.parsers import FileUploadParser, MultiPartParser
 from my_tinder.permissions import IsUserPkInUrl
 from django_filters import rest_framework as filters
+from dj_rest_auth.views import *
+from rest_framework.decorators import action
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -26,7 +29,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve', 'delete']:
-            return UserSerializer
+            return UserDetailSerializer
         else:
             return CreateUserSerializer
 
@@ -51,10 +54,14 @@ class ClientViewSet(viewsets.ModelViewSet):
             self.permission_classes = [IsAuthenticated, IsUserPkInUrl]
         return super().get_permissions()
 
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def add_liked_user(self, request, pk=None):
 
         auth_user: CustomUser = request.user
-        user = get_user_model().objects.get(pk=pk)
+        try:
+            user = get_user_model().objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            raise Http404
         if auth_user == user:
             return Response({'Предупреждение': 'Вы не можете поставить симпатию сами себе'})
         if auth_user.liked_users.contains(user) and auth_user != user:
