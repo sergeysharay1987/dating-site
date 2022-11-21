@@ -1,19 +1,18 @@
-Развертывание локальной среды разработки
+Local development environment
 ========================================
 
-Первоначальная установка
+Initial setup
 ++++++++++++++++++++++++
+Once initial setup is done only `Update`_  section should be performed to get the latest version for development.
 
-После первоначальной установки необходимо выполнять только раздел `Обновление`_ для обновления
+#. Install Docker according to: https://docs.docker.com/engine/install/ubuntu/
 
-#. Установить Docker по инструкции: https://docs.docker.com/engine/install/ubuntu/
-
-#. Добавить своего пользователя в группу docker::
+#. Add your user to docker group::
 
     sudo usermod -aG docker $USER
     exit
 
-#. Установить зависимости (as prescribed at `<https://github.com/pyenv/pyenv/wiki/Common-build-problems>`_ ) ::
+#. Install dependencies (as prescribed at `<https://github.com/pyenv/pyenv/wiki/Common-build-problems>`_ ) ::
 
     apt update && \
     apt install make build-essential libssl-dev zlib1g-dev libbz2-dev \
@@ -21,12 +20,12 @@
                 libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl \
                 libpq-dev
 
-#. Установить ``pyenv`` по инструкции: https://github.com/pyenv/pyenv-installer
-#. Установить необходимую версию Python::
+#. Install ``pyenv`` according to: https://github.com/pyenv/pyenv-installer
+#. Set a python version 3.9.2 in your directory with project::
 
     pyenv install 3.9.2
 
-#. Установить Poetry::
+#. Install poetry, according to `<https://python-poetry.org/docs/#installation>`_::
 
     export PIP_REQUIRED_VERSION=22.3
     pip install pip==${PIP_REQUIRED_VERSION} && \
@@ -38,24 +37,24 @@
     poetry run pip install virtualenvwrapper && \
     poetry run pip install pip==${PIP_REQUIRED_VERSION}
 
-Обновление
+Update
 ++++++++++
 
-#. (в отдельном окне терминала) Запустить сервисы с помощью Docker::
+#. (in a separate window of terminal) Run services using Docker::
 
     make up-dependencies-only
 
-#. Запустить обновление::
+#. Run update::
 
     make update
 
-Запуск
+Run
 ++++++
 
-#. (в отдельном окне терминала) Запустить сервисы с помощью Docker::
+#. (in a separate window of terminal) Run services using Docker::
 
     make up-dependencies-only
 
-#. (в отдельном окне терминала) Запустить сервер::
+#. (in a separate window of terminal) Run server::
 
     make run-server
