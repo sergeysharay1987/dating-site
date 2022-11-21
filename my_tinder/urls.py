@@ -14,12 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 from my_tinder import views
-from .routers import CustomRouter
 from django.conf.urls.static import static
 from dj_rest_auth.views import *
 
-router = CustomRouter()
+router = DefaultRouter()
 router.register(r'clients', views.ClientViewSet)
 
 urlpatterns = [
