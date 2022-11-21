@@ -1,20 +1,19 @@
 from io import BytesIO
-from rest_framework.fields import CharField, ImageField
-from rest_framework.serializers import ChoiceField, ModelSerializer
+from rest_framework.fields import CharField
+from rest_framework.serializers import ChoiceField
 from my_tinder.models import Gender
 from my_tinder.my_tinder_services.put_watermark import put_watermark
 from PIL import Image
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.serializers import UserDetailsSerializer
 from dj_rest_auth.serializers import LoginSerializer
 from django.contrib.auth import get_user_model
 
 
 class CreateUserSerializer(RegisterSerializer):
     username = None
-    avatar = ImageField(required=False)
     gender = ChoiceField(choices=Gender.choices)
     first_name = CharField(required=False)
-    last_name = CharField(required=False)
 
     def custom_signup(self, request, user):
         if self.validated_data.get('avatar'):
@@ -32,7 +31,7 @@ class LoginUserSerializer(LoginSerializer):
     username = None
 
 
-class UserDetailSerializer(ModelSerializer):
+class UserDetailSerializer(UserDetailsSerializer):
 
     class Meta:
         model = get_user_model()
