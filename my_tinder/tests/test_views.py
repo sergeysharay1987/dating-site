@@ -1,3 +1,4 @@
+import requests
 from my_tinder.models import CustomUser
 from rest_framework.test import APIClient
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND
@@ -7,11 +8,14 @@ file_name = 'image.png'
 
 data = {'gender': 'М', 'last_name': 'Ivanov', 'email': 'Ivanov_1000@gmail.com', 'password': 'qwerty1000'}
 
-LIST_PATH = 'http://testserver/my_tinder/list'
-FILTER_PATH = 'http://testserver/my_tinder/list?first_name=Jack'
-RETRIEVE_PATH = 'http://testserver/my_tinder/clients/'  # user id add in test_retrieve
-CREATE_PATH = 'http://testserver/my_tinder/clients/create'
-LOGIN_PATH = 'http://testserver/my_tinder/dj-rest-auth/login/'
+LIST_PATH = '/my_tinder/list'
+FILTER_PATH = '/my_tinder/list?first_name=Jack'
+RETRIEVE_PATH = '/my_tinder/clients/'  # user id add in test_retrieve
+CREATE_PATH = '/my_tinder/clients/dj-rest-auth/registration/'
+LOGIN_PATH = '/my_tinder/dj-rest-auth/login/'
+
+REMOTE_ADDR = '10.0.2.15'
+GET_LOCATION_URL = f'http://ip-api.com/json/{REMOTE_ADDR}'
 
 
 @pytest.mark.django_db
@@ -54,3 +58,14 @@ def test_login():
         }, format='json'
     )
     assert api_response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_get_user_ip(api_client):
+    api_response = api_client.get(RETRIEVE_PATH, REMOTE_ADDR='10.0.2.15')
+    assert api_response.content
+
+
+def test_get_user_location(api_client):
+    response = requests.get(GET_LOCATION_URL)
+    print(response.content)

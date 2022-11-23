@@ -4,6 +4,7 @@ from my_tinder.apps import MyTinderConfig
 from dating_site.settings import BASE_DIR
 from django_filters import rest_framework as filters
 from my_tinder.models import CustomUser
+import geocoder
 
 app_name = MyTinderConfig.name  # название приложения
 watermark = 'watermark.png'  # название изображение, содержащее водяной знак
@@ -33,3 +34,10 @@ class UserFilter(filters.FilterSet):
             'first_name': ['icontains', 'lt', 'gt'],
             'last_name': ['icontains', 'lt', 'gt']
         }
+
+
+def get_lat_long(user_ip):
+    g = geocoder.ipinfo(user_ip)
+    latitude = g[0]
+    longitude = g[1]
+    return latitude, longitude
