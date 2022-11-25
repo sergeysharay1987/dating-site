@@ -17,7 +17,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from my_tinder import views
 from django.conf.urls.static import static
-from dj_rest_auth.views import *
+from dating_site import settings
 
 router = DefaultRouter()
 router.register(r'clients', views.ClientViewSet)

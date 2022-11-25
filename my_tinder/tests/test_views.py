@@ -1,5 +1,6 @@
 import requests
 from my_tinder.models import CustomUser
+from my_tinder.my_tinder_services.put_watermark import get_lat_long, get_lat_long_free
 from rest_framework.test import APIClient
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND
 import pytest
@@ -8,13 +9,14 @@ file_name = 'image.png'
 
 data = {'gender': 'М', 'last_name': 'Ivanov', 'email': 'Ivanov_1000@gmail.com', 'password': 'qwerty1000'}
 
-LIST_PATH = '/my_tinder/list'
+LIST_PATH = '/my_tinder/clients/'
 FILTER_PATH = '/my_tinder/list?first_name=Jack'
 RETRIEVE_PATH = '/my_tinder/clients/'  # user id add in test_retrieve
 CREATE_PATH = '/my_tinder/clients/dj-rest-auth/registration/'
 LOGIN_PATH = '/my_tinder/dj-rest-auth/login/'
 
-REMOTE_ADDR = '10.0.2.15'
+REMOTE_ADDR = '199.7.2.0'
+REMOTE_ADDR_KOL = '10.0.2.15'
 GET_LOCATION_URL = f'http://ip-api.com/json/{REMOTE_ADDR}'
 
 
@@ -66,6 +68,23 @@ def test_get_user_ip(api_client):
     assert api_response.content
 
 
-def test_get_user_location(api_client):
+def test_get_user_location():
     response = requests.get(GET_LOCATION_URL)
     print(response.content)
+
+
+def test_get_lat_long():
+    user_ip = get_lat_long('10.0.2.15')
+    print(f'user_ip: {user_ip}')
+    assert isinstance(user_ip, list)
+
+
+def test_get_lat_long_free():
+    user_ip = get_lat_long_free('172.19.0.1')
+    print(f'user_ip: {user_ip}')
+
+
+@pytest.mark.django_db
+def test_remote_addr(api_client):
+    api_response = api_client.get(LIST_PATH, REMOTE_ADDR=REMOTE_ADDR)
+    print(api_response.request)

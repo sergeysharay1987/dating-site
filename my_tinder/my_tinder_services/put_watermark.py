@@ -1,3 +1,4 @@
+import requests
 from PIL import Image
 from io import BytesIO
 from my_tinder.apps import MyTinderConfig
@@ -38,6 +39,15 @@ class UserFilter(filters.FilterSet):
 
 def get_lat_long(user_ip):
     g = geocoder.ipinfo(user_ip)
-    latitude = g[0]
-    longitude = g[1]
+    return g.latlng
+
+
+def get_lat_long_free(user_ip):
+    g = geocoder.freegeoip(user_ip)
+    return g.latlng
+
+
+def get_lat_lng(REMOTE_ADDR):
+    response = requests.get(url=f'https://ipinfo.io/{REMOTE_ADDR}')
+    latitude, longitude = response.json()['loc'].split(',')
     return latitude, longitude
