@@ -1,4 +1,8 @@
 import requests
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+from model_bakery import baker
+
 from my_tinder.models import CustomUser
 from my_tinder.my_tinder_services.put_watermark import get_lat_long, get_lat_long_free
 from rest_framework.test import APIClient
@@ -88,3 +92,19 @@ def test_get_lat_long_free():
 def test_remote_addr(api_client):
     api_response = api_client.get(LIST_PATH, REMOTE_ADDR=REMOTE_ADDR)
     print(api_response.request)
+
+
+@pytest.mark.parametrize('distance', [10, 100, 1000, 10000, 100000])
+def test_get_neariest_users(distance, list_users_with_coords):
+    user = baker.make(
+        'my_tinder.CustomUser',
+        email='auth_user@yandex.ru',
+        first_name='auth_user',
+        latitude=52.2740,
+        longitude=4.7897,
+        location=Point(52.2740, 4.7897)
+    )
+
+    user_point = user.location
+    neariest_users = CustomUser.objects.filter(location__distance_lte=(user_point, D(km=distance))).exclude(id=user.id)
+    print(f'neariest_users: {neariest_users}')
