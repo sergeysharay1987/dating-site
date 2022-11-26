@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'cuser',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_gis',
     'dj_rest_auth',
     'allauth',
     'allauth.account',
@@ -66,7 +67,8 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'],
-    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication']
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication'],
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend'),
 }
 
 ROOT_URLCONF = 'dating_site.urls'
