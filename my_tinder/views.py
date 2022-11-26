@@ -1,11 +1,10 @@
-from django.contrib.auth import get_user_model
+from django.contrib.gis.geos import Point
 from django.core.mail import send_mail
 from django.http import Http404
 from rest_framework import viewsets
-from rest_framework.response import Response
 from dating_site.settings import EMAIL_HOST_USER
+from .my_tinder_services.put_watermark import UserFilter
 from .serializers import CreateUserSerializer, UserDetailSerializer
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from my_tinder.models import CustomUser
 from rest_framework.parsers import FileUploadParser, MultiPartParser
@@ -13,6 +12,7 @@ from my_tinder.permissions import IsUserPkInUrl
 from django_filters import rest_framework as filters
 from dj_rest_auth.views import *
 from rest_framework.decorators import action
+from my_tinder.my_tinder_services.put_watermark import get_lat_lng
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -25,13 +25,25 @@ class ClientViewSet(viewsets.ModelViewSet):
         FileUploadParser,
     ]
     filter_backends = [filters.DjangoFilterBackend]
-    filterset_fields = ['gender', 'first_name', 'last_name']
+    # filterset_fields = ['gender', 'first_name', 'last_name']
+    filterset_class = UserFilter
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve', 'delete']:
             return UserDetailSerializer
         else:
             return CreateUserSerializer
+
+    def get_object(self):
+
+        obj = super().get_object()
+        self.request.META['REMOTE_ADDR'] = '91.226.164.144'  # for testing purpose the key REMOTE_ADDR has
+        latitude, longitude = get_lat_lng(self.request.META['REMOTE_ADDR'])
+        obj.latitude = latitude
+        obj.longitude = longitude
+        self.request.user.location = Point(latitude, longitude)
+        obj.save()
+        return obj
 
     def get_queryset(self):
 

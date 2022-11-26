@@ -1,10 +1,10 @@
 import requests
 from PIL import Image
 from io import BytesIO
+from django.contrib.auth import get_user_model
 from my_tinder.apps import MyTinderConfig
 from dating_site.settings import BASE_DIR
 from django_filters import rest_framework as filters
-from my_tinder.models import CustomUser
 import geocoder
 
 app_name = MyTinderConfig.name  # название приложения
@@ -28,13 +28,8 @@ def put_watermark(base_image: Image, watermark_path: str = path_to_watermark) ->
 class UserFilter(filters.FilterSet):
 
     class Meta:
-        model = CustomUser
-        fields = {
-            'id': ['exact'],
-            'gender': ['exact'],
-            'first_name': ['icontains', 'lt', 'gt'],
-            'last_name': ['icontains', 'lt', 'gt']
-        }
+        model = get_user_model()
+        fields = {'gender': ['exact'], 'first_name': ['contains'], 'last_name': ['exact']}
 
 
 def get_lat_long(user_ip):
@@ -47,7 +42,7 @@ def get_lat_long_free(user_ip):
     return g.latlng
 
 
-def get_lat_lng(REMOTE_ADDR):
-    response = requests.get(url=f'https://ipinfo.io/{REMOTE_ADDR}')
+def get_lat_lng(remote_addr='91.226.164.144'):
+    response = requests.get(url=f'https://ipinfo.io/{remote_addr}')
     latitude, longitude = response.json()['loc'].split(',')
-    return latitude, longitude
+    return float(latitude), float(longitude)
