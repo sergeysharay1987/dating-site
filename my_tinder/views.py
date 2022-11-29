@@ -1,9 +1,7 @@
-from django.contrib.gis.geos import Point
 from django.core.mail import send_mail
 from django.http import Http404
 from rest_framework import viewsets
 from dating_site.settings import EMAIL_HOST_USER
-from .my_tinder_services.put_watermark import UserFilter
 from .serializers import CreateUserSerializer, UserDetailSerializer
 from rest_framework.authentication import TokenAuthentication
 from my_tinder.models import CustomUser
@@ -12,7 +10,19 @@ from my_tinder.permissions import IsUserPkInUrl
 from django_filters import rest_framework as filters
 from dj_rest_auth.views import *
 from rest_framework.decorators import action
-from my_tinder.my_tinder_services.put_watermark import get_lat_lng
+
+
+class CustomUserFilter(filters.FilterSet):
+    first_name = filters.CharFilter(lookup_expr='startswith')
+    last_name = filters.CharFilter(lookup_expr='startswith')
+    location = filters.NumberFilter(lookup_expr='distance_lte')
+
+    class Meta:
+        model = get_user_model()
+        # fields = {
+        #           'first_name': ['startswith'],
+        #           }
+        fields = ('gender', 'first_name', 'last_name')
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -25,8 +35,7 @@ class ClientViewSet(viewsets.ModelViewSet):
         FileUploadParser,
     ]
     filter_backends = [filters.DjangoFilterBackend]
-    # filterset_fields = ['gender', 'first_name', 'last_name']
-    filterset_class = UserFilter
+    filterset_class = CustomUserFilter
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve', 'delete']:
@@ -34,24 +43,20 @@ class ClientViewSet(viewsets.ModelViewSet):
         else:
             return CreateUserSerializer
 
-    def get_object(self):
-
-        obj = super().get_object()
-        self.request.META['REMOTE_ADDR'] = '91.226.164.144'  # for testing purpose the key REMOTE_ADDR has
-        latitude, longitude = get_lat_lng(self.request.META['REMOTE_ADDR'])
-        obj.latitude = latitude
-        obj.longitude = longitude
-        self.request.user.location = Point(latitude, longitude)
-        obj.save()
-        return obj
-
-    def get_queryset(self):
-
-        if self.action == 'list':
-
-            return super().get_queryset().exclude(id=self.request.user.id)
-        else:
-            return super().get_queryset()
+    # def get_queryset(self):
+    #     # print(f'self.request.query_params["distance"]: {self.request.query_params}')
+    #     if self.action == 'list':
+    #         # if self.request.query_params['distance']:
+    #         #     distance = self.request.query_params['distance']
+    #         #     auth_user = self.request.user
+    #         #     auth_user_location = auth_user.location
+    #         #     return CustomUser.objects.filter(location__distance_lte=(auth_user_location,
+    #         D(km=distance))).exclude(
+    #         #         id=auth_user.id)
+    #
+    #         return super().get_queryset().exclude(id=self.request.user.id)
+    #     else:
+    #         return super().get_queryset()
 
     def get_permissions(self):
 

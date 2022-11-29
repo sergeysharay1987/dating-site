@@ -172,3 +172,37 @@ EMAIL_USE_TLS = True
 
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)s %(name)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'filters': [],
+        },
+    },
+    'loggers': {
+        logger_name: {
+            'level': 'DEBUG',
+            'propagate': True,
+        } for logger_name in (
+            'django',
+            'django.request',
+            'django.db.backends',
+            'django.template',
+            'dating_site',
+        )
+    },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console'],
+    }
+}
