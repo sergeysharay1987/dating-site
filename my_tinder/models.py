@@ -6,7 +6,7 @@ from django.contrib.gis.db import models
 
 class Gender(TextChoices):
     MALE = 'M', 'Men'
-    FEMALE = 'W', 'Woman'
+    FEMALE = 'F', 'Female'
 
 
 class CustomUser(AbstractCUser):
@@ -16,14 +16,8 @@ class CustomUser(AbstractCUser):
     last_name = CharField(_('last name'), max_length=150, blank=True, null=True)
     liked_users = ManyToManyField('self', blank=True, symmetrical=False, related_name='liked_users_set')
     unliked_users = ManyToManyField('self', blank=True, symmetrical=False, related_name='unliked_users_set')
-    latitude = models.FloatField(blank=True, null=True)
-    longitude = models.FloatField(blank=True, null=True)
     location = models.PointField(blank=True, null=True, srid=4326, geography=True)
 
     class Meta:
         verbose_name = 'Client'
         verbose_name_plural = 'Clients'
-
-    # def save(self, *args, **kwargs):
-    #     if self.location:
-    #         return super().save(update_fields=[''])
