@@ -1,15 +1,13 @@
 from io import BytesIO
-
-from django.contrib.gis.geos import Point
 from rest_framework.fields import CharField
-from rest_framework.serializers import ChoiceField
+from rest_framework.serializers import ChoiceField, SerializerMethodField
 from my_tinder.models import Gender
-from my_tinder.my_tinder_services.put_watermark import put_watermark
 from PIL import Image
 from dj_rest_auth.registration.serializers import RegisterSerializer
-from dj_rest_auth.serializers import LoginSerializer
+from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from django.contrib.auth import get_user_model
-from rest_framework_gis.serializers import GeoFeatureModelSerializer
+
+from my_tinder.my_tinder_services.put_watermark import put_watermark
 
 
 class CreateUserSerializer(RegisterSerializer):
@@ -33,10 +31,9 @@ class LoginUserSerializer(LoginSerializer):
     username = None
 
 
-class UserDetailSerializer(GeoFeatureModelSerializer):
-    location = Point()
+class UserDetailSerializer(UserDetailsSerializer):
+    location = SerializerMethodField(method_name='get_location')
 
     class Meta:
         model = get_user_model()
         fields = ['avatar', 'email', 'gender', 'first_name', 'last_name']
-        geo_field = 'location'
