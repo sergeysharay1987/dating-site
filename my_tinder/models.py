@@ -1,4 +1,5 @@
 from cuser.models import AbstractCUser
+from django.contrib.gis.geos import Point
 from django.db.models import CharField, ImageField, ManyToManyField, TextChoices
 from django.utils.translation import gettext_lazy as _
 from django.contrib.gis.db import models
@@ -16,7 +17,7 @@ class CustomUser(AbstractCUser):
     last_name = CharField(_('last name'), max_length=150, blank=True, null=True)
     liked_users = ManyToManyField('self', blank=True, symmetrical=False, related_name='liked_users_set')
     unliked_users = ManyToManyField('self', blank=True, symmetrical=False, related_name='unliked_users_set')
-    location = models.PointField(blank=True, null=True, srid=4326, geography=True)
+    location = models.PointField(blank=True, null=True, srid=4326, geography=True, default=Point(0.0, 0.0))
 
     class Meta:
         verbose_name = 'Client'

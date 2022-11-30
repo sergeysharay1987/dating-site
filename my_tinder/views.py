@@ -1,3 +1,4 @@
+from django.contrib.gis.measure import D
 from django.core.mail import send_mail
 from django.http import Http404
 from rest_framework import viewsets
@@ -15,14 +16,18 @@ from rest_framework.decorators import action
 class CustomUserFilter(filters.FilterSet):
     first_name = filters.CharFilter(lookup_expr='startswith')
     last_name = filters.CharFilter(lookup_expr='startswith')
-    location = filters.NumberFilter(lookup_expr='distance_lte')
+    location = filters.NumberFilter(lookup_expr='distance_lte', method='filter_location')
 
     class Meta:
         model = get_user_model()
-        # fields = {
-        #           'first_name': ['startswith'],
-        #           }
         fields = ('gender', 'first_name', 'last_name')
+
+    def filter_location(self, queryset, name, value):
+        # construct the full lookup expression.
+        user_point = self.request.user.location
+        name = 'location'
+        lookup = '__'.join([name, 'distance_lte'])
+        return queryset.filter(**{lookup: (user_point, D(km=value))})
 
 
 class ClientViewSet(viewsets.ModelViewSet):

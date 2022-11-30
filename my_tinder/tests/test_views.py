@@ -97,14 +97,9 @@ def test_remote_addr(api_client):
 @pytest.mark.parametrize('distance', [10, 100, 1000, 10000, 100000])
 def test_get_neariest_users(distance, list_users_with_coords):
     user = baker.make(
-        'my_tinder.CustomUser',
-        email='auth_user@yandex.ru',
-        first_name='auth_user',
-        latitude=52.2740,
-        longitude=4.7897,
-        location=Point(52.2740, 4.7897)
+        'my_tinder.CustomUser', email='auth_user@yandex.ru', first_name='auth_user', location=Point(52.2740, 4.7897)
     )
 
     user_point = user.location
     neariest_users = CustomUser.objects.filter(location__distance_lte=(user_point, D(km=distance))).exclude(id=user.id)
-    print(f'neariest_users: {neariest_users}')
+    print(f'neariest_users: {neariest_users} at distance {dir(D)}')

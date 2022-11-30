@@ -1,6 +1,6 @@
 from io import BytesIO
 from rest_framework.fields import CharField
-from rest_framework.serializers import ChoiceField, SerializerMethodField
+from rest_framework.serializers import ChoiceField
 from my_tinder.models import Gender
 from PIL import Image
 from dj_rest_auth.registration.serializers import RegisterSerializer
@@ -32,7 +32,6 @@ class LoginUserSerializer(LoginSerializer):
 
 
 class UserDetailSerializer(UserDetailsSerializer):
-    location = SerializerMethodField(method_name='get_location')
 
     class Meta:
         model = get_user_model()
