@@ -20,12 +20,11 @@ class CustomUserFilter(filters.FilterSet):
 
     class Meta:
         model = get_user_model()
-        fields = ('gender', 'first_name', 'last_name')
+        fields = ('gender', 'first_name', 'last_name', 'location')
 
     def filter_location(self, queryset, name, value):
         # construct the full lookup expression.
         user_point = self.request.user.location
-        name = 'location'
         lookup = '__'.join([name, 'distance_lte'])
         return queryset.filter(**{lookup: (user_point, D(km=value))})
 
@@ -48,20 +47,13 @@ class ClientViewSet(viewsets.ModelViewSet):
         else:
             return CreateUserSerializer
 
-    # def get_queryset(self):
-    #     # print(f'self.request.query_params["distance"]: {self.request.query_params}')
-    #     if self.action == 'list':
-    #         # if self.request.query_params['distance']:
-    #         #     distance = self.request.query_params['distance']
-    #         #     auth_user = self.request.user
-    #         #     auth_user_location = auth_user.location
-    #         #     return CustomUser.objects.filter(location__distance_lte=(auth_user_location,
-    #         D(km=distance))).exclude(
-    #         #         id=auth_user.id)
-    #
-    #         return super().get_queryset().exclude(id=self.request.user.id)
-    #     else:
-    #         return super().get_queryset()
+    def get_queryset(self):
+
+        if self.action == 'list':
+
+            return super().get_queryset().exclude(id=self.request.user.id)
+        else:
+            return super().get_queryset()
 
     def get_permissions(self):
 
